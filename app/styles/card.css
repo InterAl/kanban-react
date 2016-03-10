@@ -1,0 +1,38 @@
+.card {
+   position: relative;
+   overflow: auto;
+   width: 180px;
+   display: inline-block;
+   background: white;
+   margin: 10px;
+   padding: 15px 15px 15px 10px;
+   box-shadow: 5px 5px 5px rgba(0,0, 0, 0.25);
+}
+
+.card-enter {
+    opacity: 0.01;
+}
+
+.card-enter.card-enter-active {
+    opacity: 1;
+    transition: opacity 500ms ease-in;
+}
+
+.card-leave {
+    opacity: 1;
+}
+
+.card-leave.card-leave-active {
+    opacity: 0.01;
+    transition: opacity 300ms ease-in;
+ }
+
+.card-ribbon {
+  position: absolute; 
+  left: 0px;
+  top: 0; 
+  bottom: 0; 
+  background-color: red; 
+  width: 7px; 
+  z-index: 1;
+}

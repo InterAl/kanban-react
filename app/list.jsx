@@ -1,5 +1,6 @@
 import React,{Component} from 'react'
 import Card from './cards.jsx'
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 
 export default class List extends Component {
 
@@ -24,11 +25,21 @@ export default class List extends Component {
            style={{display: 'inline-block', background: this.props.color, marginRight: '30px', minHeight: '500px', minWidth: '300px', verticalAlign: 'top'}}>
 
         <h3 style={{"textAlign": "center"}}>{this.props.name}</h3>
-        {this.props.cards.map((c) => 
-                                    <span key={c.id}>
-                                      <Card card={c}/>
-                                      <br/>
-                                    </span>)}
+        
+        <ReactCSSTransitionGroup
+          transitionName="card"
+          transitionAppear={true} 
+          transitionAppearTimeout={500}
+          transitionEnterTimeout={300}
+          transitionLeaveTimeout={300}>
+                                       
+            {this.props.cards.map((c) => 
+                                        <span key={c.id}>
+                                           <Card card={c}/>
+                                          <br/>
+                                        </span>)}
+                                        
+        </ReactCSSTransitionGroup>
      </div>
     );
   }
