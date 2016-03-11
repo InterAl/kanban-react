@@ -10,7 +10,7 @@ export default class List extends Component {
 
   onDrop(ev) {
     console.log("dropped");
-    this.props.cardDropped(this, ev.dataTransfer.getData("text"));
+    this.props.cardDropped(this.props.name, ev.dataTransfer.getData("text"));
   }
 
   allowDrop(ev) {
