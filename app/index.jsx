@@ -1,11 +1,11 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import Board from './board.jsx'
-import reducer from './reducers'
+import rootReducer from './reducers/rootReducer'
 import {createStore} from 'redux'
 import {Provider} from 'react-redux'
 
-let store = createStore(reducer)
+let store = createStore(rootReducer)
 
 console.log("store", store)
 

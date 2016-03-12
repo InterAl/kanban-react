@@ -19,13 +19,15 @@ class Board extends Component {
       );
         
     return (
-      <div>
+      <div style={{background: this.props.background}}>
           {lists}
       </div>
     );
   }
 }
 
-let boardConnector = connect(state => {return {lists: state.board.lists}; } )(Board);
+let boardConnector = connect(state => {
+  return {lists: state.board.lists};
+})(Board);
 
 export default boardConnector;
