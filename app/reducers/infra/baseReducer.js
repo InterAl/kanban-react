@@ -43,7 +43,7 @@ export default class BaseReducer {
 
     let rootState;
 
-    if (typeof(root.initialState) == "object")
+    if (typeof(root.initialState) == "object" && root.initialState.constructor !== Array)
       rootState = Object.assign({}, root.initialState, ...childrenState)
     else
       rootState = root.initialState
