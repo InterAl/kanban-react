@@ -85,7 +85,6 @@ export default class BaseReducer {
       nextSlice = reduceFun(nextSlice, action)
     }
 
-    debugger;
     return nextSlice
   }
 }

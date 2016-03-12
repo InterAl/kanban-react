@@ -1,4 +1,4 @@
-import BaseReducer from './baseReducer'
+import BaseReducer from './infra/baseReducer'
 
 export default class BackgroundReducer extends BaseReducer {
   constructor() {

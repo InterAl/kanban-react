@@ -1,8 +1,5 @@
 import BaseReducer from './baseReducer'
-import BoardReducer from './boardReducer'
-import BackgroundReducer from './backgroundReducer'
-
-let allReducers = [BoardReducer, BackgroundReducer]
+import allReducers from '..'
 
 class RootReducer extends BaseReducer {
     constructor() {

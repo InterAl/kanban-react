@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import Board from './board.jsx'
-import rootReducer from './reducers/rootReducer'
+import rootReducer from './reducers/infra/rootReducer'
 import {createStore} from 'redux'
 import {Provider} from 'react-redux'
 

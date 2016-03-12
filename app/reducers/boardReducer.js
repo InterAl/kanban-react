@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import cards from '../cardsData'
-import BaseReducer from './baseReducer'
+import BaseReducer from './infra/baseReducer'
 
 let initialState = {
       lists: [
