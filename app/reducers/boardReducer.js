@@ -12,11 +12,20 @@ let initialState = {
 
 export default class BoardReducer extends BaseReducer {
   constructor() {
-    super('board', 'MOVE_CARD')
+    //super('board', 'MOVE_CARD', 'CHANGE_BACKGROUND')
+    
+    super({
+      slice: 'board',
+      actions: {
+        'MOVE_CARD': 'reduceMoveCard',
+        'CHANGE_BACKGROUND': 'reduceChangeBackground'
+      }
+    })
+
     this.initialState = initialState
   }
 
-  reduce(state, action) {
+  reduceMoveCard(state, action) {
     let card = _(state.lists).map(l => l.cards).flatten().find({ id: action.cardId }); 
 
     let list = state.lists.find(l => l.name == action.listName);
@@ -29,8 +38,13 @@ export default class BoardReducer extends BaseReducer {
     let newSet = [newList, ...otherLists];
 
     //Retain the original order
-    let newState = {lists: state.lists.map(l => newSet.find(l2 => l2.name == l.name))}; 
+    let newState = {...state, lists: state.lists.map(l => newSet.find(l2 => l2.name == l.name))}; 
 
     return newState;
   }
+
+  reduceChangeBackground(state, action) {
+    return state
+  }
+
 }

@@ -20,6 +20,11 @@ class Board extends Component {
         
     return (
       <div style={{background: this.props.background}}>
+        <button onClick={() => this.props.dispatch({type: 'CHANGE_BACKGROUND',
+          background: this.props.background == 'purple' ? 'yellow' : 'purple'})}>
+           change background
+        </button>
+      <br/>
           {lists}
       </div>
     );
@@ -27,7 +32,7 @@ class Board extends Component {
 }
 
 let boardConnector = connect(state => {
-  return {lists: state.board.lists};
+  return { ...state.board };
 })(Board);
 
 export default boardConnector;
