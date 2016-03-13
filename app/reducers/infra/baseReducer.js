@@ -60,12 +60,12 @@ export default class BaseReducer {
   }
 
   _reduce(state, action) {
-    if (!state || Object.keys(state).length == 0) {
+    if (!state || (this.isPlainObject(state) && Object.keys(state).length == 0)) {
       let init = this.initializeTree(this)
       return init
     }
 
-    let nextSlice = this.isPlainObject(state) ?
+    let nextState = this.isPlainObject(state) ?
                     this._reduceChildren(state, action) :
                     state  //primitive or array
 
@@ -78,10 +78,10 @@ export default class BaseReducer {
 
      let reduceFun = (actionsReduceFun || defaultReduceFun).bind(this)
 
-      nextSlice = reduceFun(nextSlice, action)
+      nextState = reduceFun(nextState, action)
     }
 
-    return nextSlice
+    return nextState
   }
 
   _reduceChildren(state, action) {

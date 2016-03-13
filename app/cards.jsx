@@ -19,8 +19,9 @@ export default class Card extends Component {
   }
 
   render() {
-    const card = this.props.cards.find(card => card.id == this.props.cardId);
+    const card = this.props.cards.find(card => card.id == this.props.cardId)
     let cardDescription = card.showDescription ? <span>{ card.description }</span> : null;
+    debugger
     
     return (
       <div draggable="true" onDragStart={this.onDrag.bind(this)} className="card">
@@ -36,7 +37,7 @@ export default class Card extends Component {
             { cardDescription }
           </ReactCSSTransitionGroup>
 
-          <Tasks key={card.id} tasks={card.tasks} />
+          <Tasks key={card.id} cardId={card.id} tasks={card.tasks} />
       </div>
     );
   }

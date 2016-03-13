@@ -1,10 +1,10 @@
 import React, {Component} from 'react'
+import {connect} from 'react-redux' 
+import taskActions from './actionCreators/taskActionsCreator'
 
 export default class Tasks extends Component {
   constructor (props) {
     super(props);
-    this.state = {};
-    this.state.tasks = this.props.tasks;
   }
 
   getTaskStyle(task) {
@@ -13,11 +13,12 @@ export default class Tasks extends Component {
   }
 
   setAsDone(task) {
-    task.done = !task.done;
-    this.setState(this.state);
+    let action = taskActions.setAsDone(task.id, Number(this.props.cardId))
+    this.props.dispatch(action)
   }
 
   render() {
+    debugger
     return (
       <div>
         <ul>
@@ -37,3 +38,7 @@ export default class Tasks extends Component {
     );
   }
 }
+
+let connector = connect()(Tasks);
+
+export default connector

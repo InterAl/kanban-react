@@ -1,12 +1,13 @@
 import BaseReducer from './infra/baseReducer'
 import RootReducer from './infra/rootReducer'
+import TasksReducer from './tasksReducer'
 import cards from '../cardsData'
 import _ from 'lodash'
 
 class CardReducer extends RootReducer {
   constructor() {
     super({
-      reducers: [],
+      reducers: [TasksReducer],
       actions: {
         "TOGGLE_DESCRIPTION": "reduceToggleDescription"
       }
@@ -44,6 +45,7 @@ export default class CardsReducer extends BaseReducer {
     
     let cardToUpdate = foundCards[0]
     let nextCardState = this.cardReducer._reduce(cardToUpdate, action)
+    debugger
     let nextState = [nextCardState, ...cardsPartition[1]] 
     
     return nextState
