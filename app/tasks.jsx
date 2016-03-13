@@ -18,7 +18,6 @@ export default class Tasks extends Component {
   }
 
   render() {
-    debugger
     return (
       <div>
         <ul>

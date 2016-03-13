@@ -21,7 +21,6 @@ export default class Card extends Component {
   render() {
     const card = this.props.cards.find(card => card.id == this.props.cardId)
     let cardDescription = card.showDescription ? <span>{ card.description }</span> : null;
-    debugger
     
     return (
       <div draggable="true" onDragStart={this.onDrag.bind(this)} className="card">

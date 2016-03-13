@@ -45,7 +45,6 @@ export default class CardsReducer extends BaseReducer {
     
     let cardToUpdate = foundCards[0]
     let nextCardState = this.cardReducer._reduce(cardToUpdate, action)
-    debugger
     let nextState = [nextCardState, ...cardsPartition[1]] 
     
     return nextState
