@@ -1,4 +1,5 @@
 import React,{Component} from 'react'
+import {connect} from 'react-redux'
 import Card from './cards.jsx'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 
@@ -34,8 +35,8 @@ export default class List extends Component {
           transitionLeaveTimeout={300}>
                                        
             {this.props.cards.map((c) => 
-                                        <span key={c.id}>
-                                           <Card card={c}/>
+                                        <span key={c}>
+                                           <Card cardId={c}/>
                                           <br/>
                                         </span>)}
                                         
@@ -44,3 +45,7 @@ export default class List extends Component {
     );
   }
 }
+
+let connector = connect()(List);
+
+export default connector;

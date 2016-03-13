@@ -32,7 +32,7 @@ class Board extends Component {
 }
 
 let boardConnector = connect(state => {
-  return { ...state.board };
+  return state.board;
 })(Board);
 
 export default boardConnector;

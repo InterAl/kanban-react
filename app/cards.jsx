@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import {connect} from 'react-redux'
 import Tasks from './tasks'
 import './styles/card.css'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
@@ -6,23 +7,20 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 export default class Card extends Component {
   constructor (props) {
     super(props);
-    this.state = {
-      showDescription: true
-    };
   }
 
   toggleDescription () {
-    this.setState({showDescription: !this.state.showDescription});
+    this.props.dispatch({type: "TOGGLE_DESCRIPTION", "cardId": this.props.cardId})
   }
 
   onDrag (ev) {
     console.log("dragging");
-    ev.dataTransfer.setData('text', this.props.card.id);
+    ev.dataTransfer.setData('text', this.props.cardId);
   }
 
   render() {
-    const card = this.props.card;
-    let cardDescription = this.state.showDescription ? <span>{ card.description }</span> : null;
+    const card = this.props.cards.find(card => card.id == this.props.cardId);
+    let cardDescription = card.showDescription ? <span>{ card.description }</span> : null;
     
     return (
       <div draggable="true" onDragStart={this.onDrag.bind(this)} className="card">
@@ -43,3 +41,7 @@ export default class Card extends Component {
     );
   }
 }
+
+let connector = connect(state => {return {cards: state.board.cards};})(Card);
+
+export default connector

@@ -2,17 +2,17 @@ import _ from 'lodash'
 
 export default class BaseReducer {
 
-  constructor() {
+  constructor(...args) {
     let reducerActionTypes,
         slice;
 
-    if (typeof(arguments[0]) == "object") {
-      reducerActionTypes = _(arguments[0].actions).map((v, k) => k).value()
-      this.actions = arguments[0].actions
-      slice = arguments[0].slice
+    if (typeof(args[0]) == "object") {
+      reducerActionTypes = args[0].actions ? _(args[0].actions).map((v, k) => k).value() : args[0].reducerActionTypes 
+      this.actions = args[0].actions
+      slice = args[0].slice
     } else {
-      slice = arguments[0]
-      reducerActionTypes = arguments[1]
+      slice = args[0]
+      reducerActionTypes = args[1]
     }
 
     this.slice = slice
@@ -25,6 +25,14 @@ export default class BaseReducer {
     return this.reducerActionTypes && this.reducerActionTypes.indexOf(actionType) !== -1;
   }
 
+  isPlainObject(obj) {
+    return typeof(obj) == "object" && obj.constructor !== Array
+  }
+
+  isFunction(obj) {
+    return typeof(obj) === "function" 
+  }
+  
   setChildReducer(child) {
     this.childReducers.push(child)
   }
@@ -43,7 +51,7 @@ export default class BaseReducer {
 
     let rootState;
 
-    if (typeof(root.initialState) == "object" && root.initialState.constructor !== Array)
+    if (this.isPlainObject(root.initialState)) 
       rootState = Object.assign({}, root.initialState, ...childrenState)
     else
       rootState = root.initialState
@@ -52,39 +60,45 @@ export default class BaseReducer {
   }
 
   _reduce(state, action) {
-    if (Object.keys(state).length == 0) {
-      let next = this.initializeTree(this)
-      return next
+    if (!state || Object.keys(state).length == 0) {
+      let init = this.initializeTree(this)
+      return init
     }
 
-    let self = this,
-        nextSlice;
+    let nextSlice = this.isPlainObject(state) ?
+                    this._reduceChildren(state, action) :
+                    state  //primitive or array
 
-    if (typeof(state) == "object" && state.constructor !== Array) {
-      let nextSubslices = Object.keys(state).map(sliceName => {
-        let childReducer = self.childReducers.find(r => r.slice == self.getSliceFullName(sliceName))
-        let substate = state[sliceName]
+    if (this.doesHandleAction(action.type)) {
+     let actionsReduceFun = this.actions && this[this.actions[action.type]].bind(this) 
+     let defaultReduceFun = this.reduce
 
-        if (childReducer) {
-          substate = childReducer._reduce(substate, action)
-        }
+     if (!actionsReduceFun && !defaultReduceFun)
+       throw new Error(`No reduce function was found!`)
 
-        return {[sliceName]: substate}
-      })
-
-      nextSlice = Object.assign({}, ...state, ...nextSubslices)
-    } else { //primitive
-      nextSlice = state 
-    }
-
-    if (self.doesHandleAction(action.type)) {
-      let reduceFun = typeof(self.reduce) === "function" ? 
-                      self.reduce.bind(self) : 
-                      self[self.actions[action.type]].bind(self)
+     let reduceFun = (actionsReduceFun || defaultReduceFun).bind(this)
 
       nextSlice = reduceFun(nextSlice, action)
     }
 
+    return nextSlice
+  }
+
+  _reduceChildren(state, action) {
+    let self = this
+    
+    let nextSubslices = Object.keys(state).map(sliceName => {
+      let childReducer = self.childReducers.find(r => r.slice == self.getSliceFullName(sliceName))
+      let substate = state[sliceName]
+
+      if (childReducer) {
+        substate = childReducer._reduce(substate, action)
+      }
+
+      return {[sliceName]: substate}
+    })
+
+    let nextSlice = Object.assign({}, ...state, ...nextSubslices)
     return nextSlice
   }
 }

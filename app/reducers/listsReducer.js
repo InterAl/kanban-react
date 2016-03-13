@@ -1,9 +1,8 @@
 import _ from 'lodash'
-import cards from '../cardsData'
 import BaseReducer from './infra/baseReducer'
 
 let initialState = [
-        {name: "Backlog", color: '#CFCBF5', cards},
+        {name: "Backlog", color: '#CFCBF5', cards:[1, 2, 3]},
         {name: "In Progress", color: '#D1F5CB', cards: []},
         {name: "Done", color: '#F5F4CB', cards: []}
       ];
@@ -22,14 +21,12 @@ export default class ListsReducer extends BaseReducer {
   } 
 
   reduceMoveCard(state, action) {
-    let card = _(state).map(l => l.cards).flatten().find({ id: action.cardId }); 
-
     let list = state.find(l => l.name == action.listName);
 
     let otherLists = state.filter(l => l.name !== action.listName)
-                                .map(l => { return {...l, cards: l.cards.filter(c => c.id !== action.cardId) }; });
+                                .map(l => { return {...l, cards: l.cards.filter(c => c !== action.cardId) }; });
 
-    var newList = { ...list, cards: list.cards.concat(card) };
+    var newList = { ...list, cards: list.cards.concat(action.cardId) };
 
     let newSet = [newList, ...otherLists];
 

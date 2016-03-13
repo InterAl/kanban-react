@@ -1,10 +1,9 @@
 import BaseReducer from './baseReducer'
-import allReducers from '..'
 
-class RootReducer extends BaseReducer {
-    constructor() {
-     super(); 
-     this.reducers = allReducers.map(reducer => new reducer())
+export default class RootReducer extends BaseReducer {
+    constructor(...args) {
+     super(...args); 
+     this.reducers = (args[0].reducers && args[0].reducers.map(reducer => new reducer())) || []
      this.buildReducerTree()
      this.initialState = {}
     }
@@ -36,7 +35,3 @@ class RootReducer extends BaseReducer {
       return state;
     }
 }
-
-let reducer = new RootReducer()
-
-export default (state = {}, action) => reducer._reduce(state, action)
