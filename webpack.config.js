@@ -1,3 +1,4 @@
+var webpack = require('webpack');
 var path = require('path');
 var HtmlwebpackPlugin = require('html-webpack-plugin');
 
@@ -18,7 +19,7 @@ module.exports = {
     loaders: [
       {
         test: /.jsx?$/,
-        loader: 'babel-loader',
+        loader: 'react-hot!babel-loader',
         exclude: /node_modules/
       },
       {
@@ -29,9 +30,7 @@ module.exports = {
     ]
   },
   plugins: [
-    //new HtmlwebpackPlugin({
-    //  title: 'First react app'
-    //})
+    new webpack.HotModuleReplacementPlugin()
   ],
   devtool: 'source-map' 
 };
