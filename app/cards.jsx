@@ -3,6 +3,8 @@ import {connect} from 'react-redux'
 import Tasks from './tasks'
 import './styles/card.css'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
+import Editable from './editableElement'
+import cardActions from './actionCreators/cardActionCreators'
 
 export default class Card extends Component {
   constructor (props) {
@@ -18,6 +20,20 @@ export default class Card extends Component {
     ev.dataTransfer.setData('text', this.props.cardId);
   }
 
+  onTitleKeyUp(ev) {
+    if (ev.keyCode == 13) {
+      let action = cardActions.changeTitle({ cardId: this.props.cardId, title: ev.target.value })
+      this.props.dispatch(action)
+    }
+  }
+
+  onDescriptionKeyUp(ev) {
+    if (ev.keyCode == 13) {
+      let action = cardActions.changeDescription({ cardId: this.props.cardId, description: ev.target.value })
+      this.props.dispatch(action)
+    }
+  }
+
   render() {
     const card = this.props.cards.find(card => card.id == this.props.cardId)
     let cardDescription = card.showDescription ? <span>{ card.description }</span> : null;
@@ -26,14 +42,15 @@ export default class Card extends Component {
       <div draggable="true" onDragStart={this.onDrag.bind(this)} className="card">
           <div className="card-ribbon"></div>
           <span onClick={this.toggleDescription.bind(this)} style={{cursor: 'pointer'}}>{"+\u00a0"}</span>
-          <b>{card.title}</b>
+          <Editable content={ <b>{card.title}</b> } value={ card.title } onKeyUp={ this.onTitleKeyUp.bind(this) } />
           <br/>
-
           <ReactCSSTransitionGroup
             transitionName="card"
             transitionEnterTimeout={150}
             transitionLeaveTimeout={150}>
-            { cardDescription }
+
+            <Editable content={ cardDescription } value={ card.description } onKeyUp={ this.onDescriptionKeyUp.bind(this) } />
+            
           </ReactCSSTransitionGroup>
 
           <Tasks key={card.id} cardId={card.id} tasks={card.tasks} />

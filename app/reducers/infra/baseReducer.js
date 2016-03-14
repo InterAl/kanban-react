@@ -4,14 +4,15 @@ export default class BaseReducer {
 
   constructor(...args) {
     let reducerActionTypes,
-        slice;
+        slice,
+        arg = args[0];
 
-    if (typeof(args[0]) == "object") {
-      reducerActionTypes = args[0].actions ? _(args[0].actions).map((v, k) => k).value() : args[0].reducerActionTypes 
-      this.actions = args[0].actions
-      slice = args[0].slice
+    if (typeof(arg) == "object") {
+      reducerActionTypes = arg.actions ? _(arg.actions).map((v, k) => k).value() : arg.reducerActionTypes 
+      this.actions = arg.actions
+      slice = arg.slice
     } else {
-      slice = args[0]
+      slice = arg
       reducerActionTypes = args[1]
     }
 
@@ -19,6 +20,12 @@ export default class BaseReducer {
     this.reducerActionTypes = reducerActionTypes
     this.name = slice ? slice.split(".").reverse()[0] : null
     this.childReducers = []
+  }
+
+  getActionTypesRecursively() {
+    let childrenActionTypes = _(this.childReducers).map(r => r.getActionTypesRecursively()).flatten().value()
+    let allActionTypes = childrenActionTypes.concat(this.reducerActionTypes)
+    return allActionTypes
   }
 
   doesHandleAction(actionType) {

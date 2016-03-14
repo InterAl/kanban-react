@@ -17,13 +17,19 @@ export default class Tasks extends Component {
     this.props.dispatch(action)
   }
 
+  removeTask(taskId, cardId) {
+    let action = taskActions.removeTask(taskId, Number(this.props.cardId))
+    this.props.dispatch(action)
+  }
+
   render() {
     return (
       <div>
-        <ul>
+        <ul style={{"list-style-type": 'none'}}>
           {
             this.props.tasks.map((t) => 
-                                <li key={t.id}>
+                                 <li key={t.id} >
+                                  <span onClick={this.removeTask.bind(this, t.id)} style={{cursor: 'pointer', color: 'red'}}>{"✘"}</span>
                                   <input 
                                     type="checkbox" 
                                     defaultChecked={t.done} 

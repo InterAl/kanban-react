@@ -9,9 +9,19 @@ class CardReducer extends RootReducer {
     super({
       reducers: [TasksReducer],
       actions: {
-        "TOGGLE_DESCRIPTION": "reduceToggleDescription"
+        "TOGGLE_DESCRIPTION": "reduceToggleDescription",
+        "CARD_CHANGE_TITLE": "reduceChangeTitle",
+        "CARD_CHANGE_DESCRIPTION": "reduceChangeDescription"
       }
     })
+  }
+
+  reduceChangeTitle(state, action) {
+    return { ...state, title: action.title }
+  }
+
+  reduceChangeDescription(state, action) {
+    return { ...state, description: action.description }
   }
 
   reduceToggleDescription(state, action) {
@@ -21,16 +31,20 @@ class CardReducer extends RootReducer {
 
 export default class CardsReducer extends BaseReducer {
   constructor() {
+    let cardReducer = new CardReducer()
+
+    let actions = cardReducer.getActionTypesRecursively().reduce((p, c) => {
+      p[c] = "updateCard"
+      return p
+    }, {})
+
     super({
             slice: "board.cards",
-            actions: {
-              "TOGGLE_TASK": "updateCard",
-              "TOGGLE_DESCRIPTION": "updateCard"
-            }
+            actions 
           })
 
     this.initialState = cards 
-    this.cardReducer = new CardReducer()
+    this.cardReducer = cardReducer
   }
 
   updateCard(cards, action) {
