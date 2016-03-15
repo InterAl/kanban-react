@@ -14,5 +14,20 @@ export default {
       cardId,
       description
     }
+  },
+
+  addCard(cardId) {
+    return {
+      type: "ADD_CARD",
+      cardId
+    }
+  },
+
+  moveCard(cardId, listName) {
+    return { 
+      type: 'MOVE_CARD',
+      cardId: Number(cardId),
+      listName: listName
+    } 
   }
 }

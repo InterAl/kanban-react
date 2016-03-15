@@ -31,6 +31,10 @@ export default class EditableElement extends Component {
     input && input.setSelectionRange(0, input.value.length); 
   }
 
+  onBlurInput(ev) {
+    this.toggleEdit(false)
+  }
+
   render() {
     let element
 
@@ -40,6 +44,7 @@ export default class EditableElement extends Component {
       element = <input type="text"
                        ref={ this.textInputSelectAll.bind(this) } 
                        onChange={ this.onChangeInput.bind(this) }  
+                       onBlur={ this.onBlurInput.bind(this) }
                        {...this.props} />
     } 
 

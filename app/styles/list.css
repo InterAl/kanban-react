@@ -5,4 +5,29 @@
   min-width: 300px;
   vertical-align: top;
   box-shadow: 5px 5px 5px rgba(0,0, 0, 0.25);
+  padding-bottom: 20px;
+}
+
+.add-card-btn {
+  display: block;
+  padding-top: 6px;
+  border-radius: 100%;
+  width: 44px;
+  height: 35px;
+  font-size: 30px;
+  background: #DE2828;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  right: 20px;
+  bottom: 20px;
+  cursor: pointer;
+  margin-left: 43%;
+  opacity: 0.5;
+}
+
+.add-card-btn:hover {
+  opacity: 1;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+  transition: opacity 0.3s, box-shadow 0.3s;
 }

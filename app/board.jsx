@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import cards from './cardsData'
 import List from './list'
+import cardActions from './actionCreators/cardActionCreators'
 
 class Board extends Component {
   constructor () {
@@ -9,7 +10,8 @@ class Board extends Component {
   }
 
   onCardDropped(listName, cardId) {
-    this.props.dispatch({ type: 'MOVE_CARD', cardId: Number(cardId), listName: listName })
+    let action = cardActions.moveCard(cardId, listName)
+    this.props.dispatch(action)
   }
 
   render () {

@@ -3,6 +3,7 @@ import RootReducer from './infra/rootReducer'
 import TasksReducer from './tasksReducer'
 import cards from '../cardsData'
 import _ from 'lodash'
+import immutableUtils from '../utils/immutableUtils'
 
 class CardReducer extends RootReducer {
   constructor() {
@@ -38,6 +39,8 @@ export default class CardsReducer extends BaseReducer {
       return p
     }, {})
 
+    actions = {...actions, "ADD_CARD": "addCard"}
+
     super({
             slice: "board.cards",
             actions 
@@ -48,19 +51,21 @@ export default class CardsReducer extends BaseReducer {
   }
 
   updateCard(cards, action) {
-    let cardsPartition = _(cards).partition({id: action.cardId}).value()
-    let foundCards = _(cardsPartition).first()
-
-    if (foundCards.length == 0)
-      throw new Error(`CardId ${action.cardId} was not found.`)
-
-    if (foundCards.length > 1)
-      throw new Error(`Found ${foundCards.length} cards with the same cardId: ${action.cardId}`)
-    
-    let cardToUpdate = foundCards[0]
-    let nextCardState = this.cardReducer._reduce(cardToUpdate, action)
-    let nextState = [nextCardState, ...cardsPartition[1]] 
-    
+    let nextState = immutableUtils.updateCollectionItem(cards,
+                                                        {id: action.cardId},
+                                                        cardToUpdate => this.cardReducer._reduce(cardToUpdate, action))  
     return nextState
+  }
+
+  addCard(cards, action) {
+    let newCard = {
+      id: action.cardId,
+      title: "Title",
+      description: "Description",
+      status: "",
+      tasks: []
+    }
+
+    return [ ...cards, newCard ]
   }
 }

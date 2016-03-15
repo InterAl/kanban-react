@@ -31,7 +31,7 @@ export default class TasksReducer extends BaseReducer {
 
   reduceAddTask(tasks, action) {
     let newTask = {
-      id: _.max(tasks.map(t => t.id)) + 1,
+      id: _.max(tasks.map(t => t.id)) + 1 || 1,
       name: action.name,
       done: false
     }

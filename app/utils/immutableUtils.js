@@ -13,7 +13,6 @@ export default {
 
     let itemToUpdate = foundItems[0]
     let nextItemState = updateFun(itemToUpdate) 
-
     let nextState = [nextItemState, ...partition[1]]
 
     return nextState
