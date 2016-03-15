@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import BaseReducer from './infra/baseReducer'
+import immutableUtils from '../utils/immutableUtils'
 
 let initialState = [
         {name: "Backlog", color: '#CFCBF5', cards:[1, 2, 3]},
@@ -13,7 +14,8 @@ export default class ListsReducer extends BaseReducer {
     super({
         slice: 'board.lists',
         actions: {
-          "MOVE_CARD": "reduceMoveCard"
+          "MOVE_CARD": "reduceMoveCard",
+          "REMOVE_CARD": "reduceRemoveCard"
         }
     })
 
@@ -35,4 +37,12 @@ export default class ListsReducer extends BaseReducer {
 
     return newState;
   } 
+
+  reduceRemoveCard(state, action) {
+    let next = immutableUtils.updateCollectionItem(state,
+                                                   l => l.cards.indexOf(action.cardId) !== -1,
+                                                   list => { return { ...list, cards: list.cards.filter(c => c !== action.cardId )}})
+    let nextOrdered = state.map(l => next.find(l2 => l2.name == l.name))
+    return nextOrdered
+  }
 }

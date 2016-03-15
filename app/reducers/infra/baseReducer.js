@@ -22,6 +22,15 @@ export default class BaseReducer {
     this.childReducers = []
   }
 
+  static inheritActionsFromReducer(reducer, reduceMethodName) {
+    let actions = reducer.getActionTypesRecursively().reduce((p, c) => {
+      p[c] = reduceMethodName
+      return p
+    }, {})
+
+    return actions
+  }
+
   getActionTypesRecursively() {
     let childrenActionTypes = _(this.childReducers).map(r => r.getActionTypesRecursively()).flatten().value()
     let allActionTypes = childrenActionTypes.concat(this.reducerActionTypes)
@@ -77,13 +86,13 @@ export default class BaseReducer {
                     state  //primitive or array
 
     if (this.doesHandleAction(action.type)) {
-     let actionsReduceFun = this.actions && this[this.actions[action.type]].bind(this) 
-     let defaultReduceFun = this.reduce
+      let actionsReduceFun = this.actions && this[this.actions[action.type]].bind(this) 
+      let defaultReduceFun = this.reduce
 
-     if (!actionsReduceFun && !defaultReduceFun)
-       throw new Error(`No reduce function was found!`)
+      if (!actionsReduceFun && !defaultReduceFun)
+        throw new Error(`No reduce function was found!`)
 
-     let reduceFun = (actionsReduceFun || defaultReduceFun).bind(this)
+      let reduceFun = (actionsReduceFun || defaultReduceFun).bind(this)
 
       nextState = reduceFun(nextState, action)
     }

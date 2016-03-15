@@ -34,12 +34,12 @@ export default class CardsReducer extends BaseReducer {
   constructor() {
     let cardReducer = new CardReducer()
 
-    let actions = cardReducer.getActionTypesRecursively().reduce((p, c) => {
-      p[c] = "updateCard"
-      return p
-    }, {})
-
-    actions = {...actions, "ADD_CARD": "addCard"}
+    let actions = BaseReducer.inheritActionsFromReducer(cardReducer, "updateCard")
+    actions = {
+                ...actions,
+                "ADD_CARD": "addCard",
+                "REMOVE_CARD": "removeCard"
+              }
 
     super({
             slice: "board.cards",
@@ -67,5 +67,9 @@ export default class CardsReducer extends BaseReducer {
     }
 
     return [ ...cards, newCard ]
+  }
+
+  removeCard(cards, action) {
+    return cards.filter(c => c.id !== action.cardId)
   }
 }

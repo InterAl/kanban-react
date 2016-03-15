@@ -36,3 +36,24 @@
   width: 7px; 
   z-index: 1;
 }
+
+.remove-card-btn {
+  display: block;
+  float: right;
+  border-radius: 100%;
+  padding-top: 3px;
+  width: 15px;
+  height: 12px;
+  font-size: 10px;
+  background: #DE2828;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.remove-card-btn:hover {
+  color: #E0DCDC;
+  background: #CC0000;
+  transition: color 0.3s, background 0.3s;
+}

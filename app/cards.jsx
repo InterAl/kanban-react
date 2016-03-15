@@ -34,6 +34,11 @@ export default class Card extends Component {
     }
   }
 
+  onClickRemoveCard(ev) {
+    let action = cardActions.removeCard(this.props.cardId)
+    this.props.dispatch(action)
+  }
+
   render() {
     const card = this.props.cards.find(card => card.id == this.props.cardId)
 
@@ -46,6 +51,7 @@ export default class Card extends Component {
     
     return (
       <div draggable="true" onDragStart={this.onDrag.bind(this)} className="card">
+          <span onClick={this.onClickRemoveCard.bind(this)} className="remove-card-btn"><b>✘</b></span>
           <div className="card-ribbon"></div>
           <span onClick={this.toggleDescription.bind(this)} style={{cursor: 'pointer'}}>{"+\u00a0"}</span>
           <Editable content={ <b>{card.title}</b> } value={ card.title } onKeyUp={ this.onTitleKeyUp.bind(this) } />

@@ -23,6 +23,13 @@ export default {
     }
   },
 
+  removeCard(cardId) {
+    return {
+      type: "REMOVE_CARD",
+      cardId
+    }
+  },
+
   moveCard(cardId, listName) {
     return { 
       type: 'MOVE_CARD',
