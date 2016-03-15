@@ -54,7 +54,7 @@ export default class Card extends Component {
           <span onClick={this.onClickRemoveCard.bind(this)} className="remove-card-btn"><b>✘</b></span>
           <div className="card-ribbon"></div>
           <span onClick={this.toggleDescription.bind(this)} style={{cursor: 'pointer'}}>{"+\u00a0"}</span>
-          <Editable content={ <b>{card.title}</b> } value={ card.title } onKeyUp={ this.onTitleKeyUp.bind(this) } />
+          <Editable content={ <b>{card.title}</b> } size={15} value={ card.title } onKeyUp={ this.onTitleKeyUp.bind(this) } />
           <br/>
 
           <ReactCSSTransitionGroup

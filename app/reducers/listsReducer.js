@@ -28,7 +28,7 @@ export default class ListsReducer extends BaseReducer {
     let otherLists = state.filter(l => l.name !== action.listName)
                                 .map(l => { return {...l, cards: l.cards.filter(c => c !== action.cardId) }; });
 
-    var newList = { ...list, cards: list.cards.concat(action.cardId) };
+    let newList = { ...list, cards: list.cards.concat(action.cardId) };
 
     let newSet = [newList, ...otherLists];
 
