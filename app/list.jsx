@@ -2,6 +2,7 @@ import React,{Component} from 'react'
 import {connect} from 'react-redux'
 import Card from './cards.jsx'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
+import './styles/list.css'
 
 export default class List extends Component {
 
@@ -23,7 +24,8 @@ export default class List extends Component {
     return (
       <div onDrop={this.onDrop.bind(this)}
            onDragOver={this.allowDrop.bind(this)}
-           style={{display: 'inline-block', background: this.props.color, marginRight: '30px', minHeight: '500px', minWidth: '300px', verticalAlign: 'top'}}>
+           className="list"
+           style={{ background: this.props.color}}>
 
         <h3 style={{"textAlign": "center"}}>{this.props.name}</h3>
         

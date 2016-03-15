@@ -1,4 +1,8 @@
 .list {
-  display: 'inline-block'; 
-  background: this.props.color
-  , marginRight: '30px', minHeight: '500px', minWidth: '300px', verticalAlign: 'top'
+  display: inline-block;
+  margin-right: 30px;
+  min-height: 500px;
+  min-width: 300px;
+  vertical-align: top;
+  box-shadow: 5px 5px 5px rgba(0,0, 0, 0.25);
+}
