@@ -36,7 +36,13 @@ export default class Card extends Component {
 
   render() {
     const card = this.props.cards.find(card => card.id == this.props.cardId)
-    let cardDescription = card.showDescription ? <span>{ card.description }</span> : null;
+
+    let cardDescription = card.showDescription ?
+                            <Editable
+                            content={ <span>{ card.description }</span> }
+                            value={ card.description }
+                            onKeyUp={ this.onDescriptionKeyUp.bind(this) } /> : null;
+            
     
     return (
       <div draggable="true" onDragStart={this.onDrag.bind(this)} className="card">
@@ -44,13 +50,12 @@ export default class Card extends Component {
           <span onClick={this.toggleDescription.bind(this)} style={{cursor: 'pointer'}}>{"+\u00a0"}</span>
           <Editable content={ <b>{card.title}</b> } value={ card.title } onKeyUp={ this.onTitleKeyUp.bind(this) } />
           <br/>
+
           <ReactCSSTransitionGroup
             transitionName="card"
             transitionEnterTimeout={150}
             transitionLeaveTimeout={150}>
-
-            <Editable content={ cardDescription } value={ card.description } onKeyUp={ this.onDescriptionKeyUp.bind(this) } />
-            
+            { cardDescription }
           </ReactCSSTransitionGroup>
 
           <Tasks key={card.id} cardId={card.id} tasks={card.tasks} />

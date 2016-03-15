@@ -26,6 +26,11 @@ export default class EditableElement extends Component {
     this.forceUpdate()
   }
 
+  textInputSelectAll(component) {
+    let input = React.findDOMNode(component); 
+    input && input.setSelectionRange(0, input.value.length); 
+  }
+
   render() {
     let element
 
@@ -33,11 +38,9 @@ export default class EditableElement extends Component {
       element = this.props.content
     } else {
       element = <input type="text"
-        ref={ (component) => { 
-          let input = React.findDOMNode(component); 
-          input && input.setSelectionRange(0, input.value.length); 
-        } } 
-        onChange={ this.onChangeInput.bind(this) }  {...this.props} />
+                       ref={ this.textInputSelectAll.bind(this) } 
+                       onChange={ this.onChangeInput.bind(this) }  
+                       {...this.props} />
     } 
 
     return ( <span onClick={ this.toggleEdit.bind(this, true) } onKeyUp={ this.onKeyUp.bind(this) }>

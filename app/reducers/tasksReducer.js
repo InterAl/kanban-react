@@ -8,7 +8,8 @@ export default class TasksReducer extends BaseReducer {
       slice: "tasks",
       actions: {
         "TOGGLE_TASK": "reduceToggleTask",
-        "REMOVE_TASK": "reduceRemoveTask"
+        "REMOVE_TASK": "reduceRemoveTask",
+        "ADD_TASK": "reduceAddTask"
       }})
   }
 
@@ -26,6 +27,16 @@ export default class TasksReducer extends BaseReducer {
     let nextStateOrdered = tasks.map(t => nextStateUnordered.find(t2 => t2.id == t.id))
 
     return nextStateOrdered
+  }
+
+  reduceAddTask(tasks, action) {
+    let newTask = {
+      id: _.max(tasks.map(t => t.id)) + 1,
+      name: action.name,
+      done: false
+    }
+
+    return [ ...tasks, newTask ]
   }
 
 

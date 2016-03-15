@@ -1,6 +1,8 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux' 
 import taskActions from './actionCreators/taskActionsCreator'
+import TaskAdd from './taskAdd.jsx'
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 
 export default class Tasks extends Component {
   constructor (props) {
@@ -23,21 +25,34 @@ export default class Tasks extends Component {
   }
 
   render() {
+    let tasks = this.props.tasks.map((t) => 
+       <li key={t.id} >
+        <span onClick={this.removeTask.bind(this, t.id)} style={{cursor: 'pointer', color: 'red'}}>{"✘"}</span>
+        <input 
+          type="checkbox" 
+          defaultChecked={t.done} 
+          onClick={this.setAsDone.bind(this, t)} />
+
+        <span style={this.getTaskStyle(t)}>{t.name}</span>
+      </li>
+    )
+
     return (
       <div>
-        <ul style={{"list-style-type": 'none'}}>
-          {
-            this.props.tasks.map((t) => 
-                                 <li key={t.id} >
-                                  <span onClick={this.removeTask.bind(this, t.id)} style={{cursor: 'pointer', color: 'red'}}>{"✘"}</span>
-                                  <input 
-                                    type="checkbox" 
-                                    defaultChecked={t.done} 
-                                    onClick={this.setAsDone.bind(this, t)} />
+        <ul style={{listStyleType: 'none'}}>
+        <ReactCSSTransitionGroup
+          transitionName="card"
+          transitionAppear={true} 
+          transitionAppearTimeout={500}
+          transitionEnterTimeout={300}
+          transitionLeaveTimeout={300}>
+          { tasks }
+        </ReactCSSTransitionGroup>
 
-                                  <span style={this.getTaskStyle(t)}>{t.name}</span>
-                                </li>)
-          }
+          <li style={{marginTop: 5}}>
+            <TaskAdd cardId={this.props.cardId}/>
+          </li>
+
         </ul>
       </div>
     );

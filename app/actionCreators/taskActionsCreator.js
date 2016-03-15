@@ -14,6 +14,14 @@ export default {
       taskId,
       cardId
     }
+  },
+
+  addTask(cardId, name) {
+    return {
+      type: "ADD_TASK",
+      cardId,
+      name
+    }
   }
 
 }
