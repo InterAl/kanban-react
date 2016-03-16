@@ -10,6 +10,7 @@ import addCardThunk from './thunks/addCard'
 import {DropTarget} from 'react-dnd'
 import dragItemContainer from './utils/dragItemContainer'
 import _ from 'lodash'
+import FlipMove from 'react-flip-move';
 
 export class List extends Component {
 
@@ -20,41 +21,76 @@ export class List extends Component {
 
   static dropTarget() {
 
-    function setPreviewMarker(monitor, component) {
-      if (!monitor.getClientOffset()) return;
+    function getDomElementDistanceFromMouse(mouseY, cardElement, side) {
+      let rect = cardElement.boundedRect
+      return Math.abs(rect[side] - mouseY)
+    }
 
-      let mouseY = monitor.getClientOffset().y;
+    function getDomCardElements(component) {
       let listElement = findDOMNode(component)
       let cardsContainerEle = listElement.getElementsByClassName("cards-container")[0]
       let cardEles = cardsContainerEle.getElementsByClassName("list-card")
 
       cardEles = Array.prototype.slice.call(cardEles)
 
-      let cardMap = cardEles.reduce((p, c) => {
-        let cardId = c.getAttribute("data-card-id")
-        let element = c.getElementsByClassName("card")[0]
-        p[cardId] = element
-        return p
-      }, {})
+      return cardEles.map(e => {
+        let element = e.getElementsByClassName("card")[0]
+        let boundedRect = element.getBoundingClientRect()
 
-      let closestComponentKey = _(cardMap).map((v, k) => k).minBy(cardId => {
-        let element = cardMap[cardId]
+        return {
+          cardId: e.getAttribute("data-card-id"),
+          element,
+          boundedRect
+        }})
+    }
 
-        if (!element) 
-          return Infinity
-
-        return Math.abs(element.getBoundingClientRect().bottom - mouseY)
+    function getTopElement(cardElements) {
+      return _(cardElements).minBy(e => e.boundedRect.top)
+    }
+    
+    function getClosestElementToMouse(cardElements, mouseY) {
+      let closestElement = _(cardElements).minBy(e => {
+        return getDomElementDistanceFromMouse(mouseY, e, 'bottom')
       })
+      return closestElement
+    }
 
-      let closestComponent = cardMap[closestComponentKey]
+    function getPreviewMarker(monitor, component) {
+      let mouseOffset = monitor.getClientOffset()
+      if (!mouseOffset) return;
 
-      if (closestComponent) {
-        let previewMarkerY = findDOMNode(closestComponent).getBoundingClientRect().bottom
-        component.setState({
-          previewMarkerY,
-          previewCardId: Number(closestComponentKey)
-        }) 
+      let mouseY = mouseOffset.y;
+      let domCardElements = getDomCardElements(component)
+      let closestElement = getClosestElementToMouse(domCardElements, mouseY)
+      let previewMarkerY, previewCardId = closestElement ? closestElement.cardId : "-1"
+
+      if (domCardElements && domCardElements.length > 0) {
+        let topElement = getTopElement(domCardElements)
+
+        if (closestElement == topElement) {
+          let closestSide = _(['bottom', 'top']).minBy(side => getDomElementDistanceFromMouse(mouseY, topElement, side))
+          previewMarkerY = topElement.boundedRect[closestSide]
+          previewCardId = closestSide == 'top' ? -1 : previewCardId
+        } else {
+          previewMarkerY = closestElement.boundedRect.bottom
+        }
+      } else {
+        previewMarkerY = mouseY
       }
+
+      return {
+        previewMarkerY,
+        previewCardId
+      }
+    }
+
+    function setPreviewMarker(monitor, component) {
+      let { previewCardId, previewMarkerY } = getPreviewMarker(monitor, component)
+
+      component.setState({
+        previewCardId,
+        previewMarkerY
+      })
     }
 
     function getDraggedItem(monitor) {
@@ -96,7 +132,6 @@ export class List extends Component {
     this.props.dispatch(addCardThunk(this.props.name))
   }
 
-
   render() {
     let addCardBtn = <span className="add-card-btn" onClick={ this.onClickAddCardBtn.bind(this) }><b>+</b></span>
     let previewDropMarker = this.props.isOver && this.state.previewMarkerY ?
@@ -121,9 +156,7 @@ export class List extends Component {
         <div className="cards-container">
 
           <ReactCSSTransitionGroup transitionName="card" transitionAppear={true} transitionAppearTimeout={500} transitionEnterTimeout={300} transitionLeaveTimeout={300}> 
-
             { cards }
-
           </ReactCSSTransitionGroup>
 
         </div>                         

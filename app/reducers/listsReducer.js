@@ -27,27 +27,19 @@ export default class ListsReducer extends BaseReducer {
     let lists = state.map(l => { return {...l, cards: l.cards.filter(c => c !== action.cardId) }; });
     let currentCardIdx = currentCardList ? _(currentCardList.cards).findIndex(cardId => cardId == action.cardId) : -1
 
-    debugger
-
     let effectiveLocationIdx = (currentCardList &&
                                currentCardList.name == action.listName &&
                                action.dropLocationIdx > currentCardIdx) ?
                                action.dropLocationIdx - 1 : 
                                action.dropLocationIdx
 
-debugger
-
     let [list, otherLists] = _(lists).partition(l => l.name == action.listName).value()
     list = list[0]
-    
-
-    debugger
 
     let [cardsBefore, cardsAfter] = _(list.cards).map((cardId, idx) => {return {cardId, idx}})
                                           .partition(c => c.idx < effectiveLocationIdx)
                                           .map(partition => partition.map(c => c.cardId)).value()
 
-                                          debugger
     let newCardsArray = [ ...cardsBefore, action.cardId, ...cardsAfter ]
 
     let newList = { ...list, cards: newCardsArray };

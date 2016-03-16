@@ -5,7 +5,7 @@ export default function(listName) {
   return (dispatch, getState) => {
     let state = getState()
     let cards = state.board.cards
-    let list = state.board.lists.find(l => l.listName = listName)
+    let list = state.board.lists.find(l => l.name == listName)
     let moveLocationIdx = list.cards.length
     let cardId = _.max(cards.map(c => c.id)) + 1
 
