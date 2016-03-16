@@ -30,11 +30,12 @@ export default {
     }
   },
 
-  moveCard(cardId, listName) {
+  moveCard(cardId, listName, dropLocationIdx) {
     return { 
       type: 'MOVE_CARD',
       cardId: Number(cardId),
-      listName: listName
+      listName: listName,
+      dropLocationIdx: dropLocationIdx || 0 
     } 
   }
 }

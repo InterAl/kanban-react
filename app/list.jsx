@@ -21,20 +21,39 @@ export class List extends Component {
   static dropTarget() {
 
     function setPreviewMarker(monitor, component) {
+      if (!monitor.getClientOffset()) return;
+
+      let mouseY = monitor.getClientOffset().y;
       let listElement = findDOMNode(component)
       let cardsContainerEle = listElement.getElementsByClassName("cards-container")[0]
-      let cardEles = cardsContainerEle.getElementsByClassName("card")
-      let mouseY = monitor.getClientOffset().y;
-      let closestComponent = _(cardEles).minBy(element => {
+      let cardEles = cardsContainerEle.getElementsByClassName("list-card")
+
+      cardEles = Array.prototype.slice.call(cardEles)
+
+      let cardMap = cardEles.reduce((p, c) => {
+        let cardId = c.getAttribute("data-card-id")
+        let element = c.getElementsByClassName("card")[0]
+        p[cardId] = element
+        return p
+      }, {})
+
+      let closestComponentKey = _(cardMap).map((v, k) => k).minBy(cardId => {
+        let element = cardMap[cardId]
+
         if (!element) 
           return Infinity
 
         return Math.abs(element.getBoundingClientRect().bottom - mouseY)
       })
 
-      if(closestComponent) {
+      let closestComponent = cardMap[closestComponentKey]
+
+      if (closestComponent) {
         let previewMarkerY = findDOMNode(closestComponent).getBoundingClientRect().bottom
-        component.setState({previewMarkerY}) 
+        component.setState({
+          previewMarkerY,
+          previewCardId: Number(closestComponentKey)
+        }) 
       }
     }
 
@@ -45,8 +64,7 @@ export class List extends Component {
 
     return {
       canDrop(props, monitor) {
-        let item = getDraggedItem(monitor)
-        return props.cards.indexOf(item.cardId) === -1
+        return true
       },
 
       hover(props, monitor, component) {
@@ -56,7 +74,8 @@ export class List extends Component {
       drop(props, monitor, component) {
         console.log("dropped");
         let item = getDraggedItem(monitor)
-        let action = cardActions.moveCard(item.cardId, props.name)
+        let dropLocationIdx = _(props.cards).findIndex(cardId => cardId == component.state.previewCardId) + 1
+        let action = cardActions.moveCard(item.cardId, props.name, dropLocationIdx)
         props.dispatch(action)
         component.setState({previewMarkerY: null})
       },
@@ -83,32 +102,36 @@ export class List extends Component {
     let previewDropMarker = this.props.isOver && this.state.previewMarkerY ?
                               <hr className="preview-card-line" style={{ top: this.state.previewMarkerY + 'px' }}/> 
                             : null
+    let listTitle = <h3 style={{"textAlign": "center"}}>{this.props.name}</h3>
+    let cards = this.props.cards.map((c) => 
+                              <span key={c} className="list-card" data-card-id={c}>
+                                 <Card cardId={c} />
+                                <br/>
+                              </span>)
     
     return this.props.connectDropTarget(
-      <div className="list"
-        style={{ background: this.props.color}}
-      >
 
-        <h3 style={{"textAlign": "center"}}>{this.props.name}</h3>
-        {previewDropMarker}
+      <div className="list"
+           style={{ background: this.props.color}}>
+           
+        { listTitle }
+
+        { previewDropMarker }
+
         <div className="cards-container">
-          <ReactCSSTransitionGroup
-            transitionName="card"
-            transitionAppear={true} 
-            transitionAppearTimeout={500}
-            transitionEnterTimeout={300}
-            transitionLeaveTimeout={300}>
-                                         
-              {this.props.cards.map((c) => 
-                                          <span key={c}>
-                                             <Card cardId={c} />
-                                            <br/>
-                                          </span>)}
+
+          <ReactCSSTransitionGroup transitionName="card" transitionAppear={true} transitionAppearTimeout={500} transitionEnterTimeout={300} transitionLeaveTimeout={300}> 
+
+            { cards }
+
           </ReactCSSTransitionGroup>
+
         </div>                         
 
         {addCardBtn}
+
      </div>
+
     );
   }
 }
