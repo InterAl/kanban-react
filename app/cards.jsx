@@ -1,24 +1,44 @@
 import React, {Component} from 'react'
+import {DragSource} from 'react-dnd'
 import {connect} from 'react-redux'
 import Tasks from './tasks'
 import './styles/card.css'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 import Editable from './editableElement'
 import cardActions from './actionCreators/cardActionCreators'
+import dragItemContainer from './utils/dragItemContainer'
 
 export default class Card extends Component {
   constructor (props) {
     super(props);
   }
 
+  static cardSource ()  {
+    return {
+      beginDrag (props) {
+
+        let dragItem = {
+          cardId: props.cardId
+        }
+
+        console.log("begin dragging", dragItem);
+        dragItemContainer.setDragItem(dragItem) //due to a bug in react-dnd's monitor.getItem
+        return dragItem
+      }
+    }
+  }
+
+  static collect(connect, monitor) {
+    return {
+      connectDragSource: connect.dragSource(),
+      isDragging: monitor.isDragging()
+    }
+  }
+
   toggleDescription () {
     this.props.dispatch({type: "TOGGLE_DESCRIPTION", "cardId": this.props.cardId})
   }
 
-  onDrag (ev) {
-    console.log("dragging");
-    ev.dataTransfer.setData('text', this.props.cardId);
-  }
 
   onTitleKeyUp(ev) {
     if (ev.keyCode == 13) {
@@ -49,8 +69,8 @@ export default class Card extends Component {
                             onKeyUp={ this.onDescriptionKeyUp.bind(this) } /> : null;
             
     
-    return (
-      <div draggable="true" onDragStart={this.onDrag.bind(this)} className="card">
+    return this.props.connectDragSource(
+      <div className="card">
           <span onClick={this.onClickRemoveCard.bind(this)} className="remove-card-btn"><b>✘</b></span>
           <div className="card-ribbon"></div>
           <span onClick={this.toggleDescription.bind(this)} style={{cursor: 'pointer'}}>{"+\u00a0"}</span>
@@ -70,6 +90,7 @@ export default class Card extends Component {
   }
 }
 
-let connector = connect(state => {return {cards: state.board.cards};})(Card);
+let dragSource = DragSource("CARD", Card.cardSource(), Card.collect)(Card)
+let connector = connect(state => {return {cards: state.board.cards};})(dragSource);
 
 export default connector

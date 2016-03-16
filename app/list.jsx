@@ -5,6 +5,8 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 import './styles/list.css'
 import cardActions from './actionCreators/cardActionCreators'
 import addCardThunk from './thunks/addCard'
+import {DropTarget} from 'react-dnd'
+import dragItemContainer from './utils/dragItemContainer'
 
 export class List extends Component {
 
@@ -12,9 +14,36 @@ export class List extends Component {
     super(props);
   }
 
+  static dropTarget() {
+    return {
+      canDrop(props, monitor) {
+        return true
+      },
+
+      hover(props, monitor, component) {
+       
+      },
+
+      drop(props, monitor, component) {
+        console.log("dropped");
+        let item = monitor.getItem() || dragItemContainer.getDragItem()
+        let action = cardActions.moveCard(item.cardId, props.name)
+        props.dispatch(action)
+      },
+    };
+  }
+
+  static collect(connect, monitor) {
+      return {
+        connectDropTarget: connect.dropTarget(),
+        isOver: monitor.isOver(),
+        isOverCurrent: monitor.isOver({ shallow: true }),
+        canDrop: monitor.canDrop(),
+        itemType: monitor.getItemType()
+      };
+  }
+
   onDrop(ev) {
-    console.log("dropped");
-    this.props.cardDropped(this.props.name, ev.dataTransfer.getData("text"));
   }
 
   allowDrop(ev) {
@@ -29,10 +58,8 @@ export class List extends Component {
   render() {
     let addCardBtn = <span className="add-card-btn" onClick={ this.onClickAddCardBtn.bind(this) }><b>+</b></span>
 
-    return (
-      <div onDrop={this.onDrop.bind(this)}
-           onDragOver={this.allowDrop.bind(this)}
-           className="list"
+    return this.props.connectDropTarget(
+      <div className="list"
            style={{ background: this.props.color}}>
 
         <h3 style={{"textAlign": "center"}}>{this.props.name}</h3>
@@ -58,6 +85,7 @@ export class List extends Component {
   }
 }
 
-let connector = connect()(List);
+let dropTarget = DropTarget(props => ["CARD", "LIST"], List.dropTarget(), List.collect)(List)
+let connector = connect()(dropTarget);
 
 export default connector;

@@ -3,6 +3,8 @@ import {connect} from 'react-redux'
 import cards from './cardsData'
 import List from './list'
 import cardActions from './actionCreators/cardActionCreators'
+import {DragDropContext} from 'react-dnd'
+import HTML5Backend from 'react-dnd-html5-backend'
 
 class Board extends Component {
   constructor () {
@@ -33,8 +35,10 @@ class Board extends Component {
   }
 }
 
+let boardContext = DragDropContext(HTML5Backend)(Board)
+
 let boardConnector = connect(state => {
   return state.board;
-})(Board);
+})(boardContext);
 
 export default boardConnector;
