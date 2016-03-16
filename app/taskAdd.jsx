@@ -38,7 +38,7 @@ class TaskAdd extends Component {
     let input = (
       <input
         type="text"
-        size={10}
+        size={30}
         onKeyUp={this.inputOnClick.bind(this)}
         onBlur={this.inputOnBlur.bind(this)}
         ref={this.inputOnMount.bind(this)} />

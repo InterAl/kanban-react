@@ -39,7 +39,7 @@ export default class Tasks extends Component {
 
     return (
       <div>
-        <ul style={{listStyleType: 'none'}}>
+        <ul style={{listStyleType: 'none', paddingLeft: '0%'}}>
         <ReactCSSTransitionGroup
           transitionName="card"
           transitionAppear={true} 
