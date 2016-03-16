@@ -50,11 +50,11 @@
   text-align: center;
   text-decoration: none;
   cursor: pointer;
-  transition: color 0.3s, background 0.3s;
+  opacity: 0.5;
+  transition: opacity 0.5s, color 0.3s, background 0.3s;
 }
 
 .remove-card-btn:hover {
-  color: #E0DCDC;
-  background: #CC0000;
-  transition: color 0.3s, background 0.3s;
+  opacity: 1;
+  transition: opacity 0.5s, color 0.3s;
 }

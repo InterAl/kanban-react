@@ -62,6 +62,8 @@ export default class Card extends Component {
   render() {
     const card = this.props.cards.find(card => card.id == this.props.cardId)
 
+    if (!card) return null
+      
     let cardDescription = card.showDescription ?
                             <Editable
                             content={ <span>{ card.description }</span> }

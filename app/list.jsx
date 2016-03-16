@@ -43,14 +43,6 @@ export class List extends Component {
       };
   }
 
-  onDrop(ev) {
-  }
-
-  allowDrop(ev) {
-    console.log("allowing drop");
-    ev.preventDefault();
-  }
-
   onClickAddCardBtn(ev) {
     this.props.dispatch(addCardThunk(this.props.name))
   }

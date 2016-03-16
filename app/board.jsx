@@ -11,24 +11,14 @@ class Board extends Component {
     super();
   }
 
-  onCardDropped(listName, cardId) {
-    let action = cardActions.moveCard(cardId, listName)
-    this.props.dispatch(action)
-  }
-
   render () {
     console.log("board props", this.props)
     const lists = this.props.lists.map(l => 
-          <List key={l.name} cardDropped={this.onCardDropped.bind(this)} name={l.name} cards={l.cards} color={l.color} />
+          <List key={l.name} name={l.name} cards={l.cards} color={l.color} />
       );
         
     return (
-      <div style={{background: this.props.background}}>
-        <button onClick={() => this.props.dispatch({type: 'CHANGE_BACKGROUND',
-          background: this.props.background == 'purple' ? 'yellow' : 'purple'})}>
-           change background
-        </button>
-      <br/>
+      <div>
           {lists}
       </div>
     );
