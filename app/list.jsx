@@ -47,7 +47,7 @@ export class List extends Component {
     function getTopElement(cardElements) {
       return _(cardElements).minBy(e => e.boundedRect.top)
     }
-    
+
     function getClosestElementToMouse(cardElements, mouseY) {
       let closestElement = _(cardElements).minBy(e => {
         return getDomElementDistanceFromMouse(mouseY, e, 'bottom')
@@ -133,12 +133,18 @@ export class List extends Component {
   }
 
   render() {
-    let addCardBtn = <span className="add-card-btn" onClick={ this.onClickAddCardBtn.bind(this) }><b>+</b></span>
+    let addCardBtn = (<span
+                      className="add-card-btn"
+                      onClick={ this.onClickAddCardBtn.bind(this) }>
+                       <b>+</b>
+                     </span>)
+
     let previewDropMarker = this.props.isOver && this.state.previewMarkerY ?
-                              <hr className="preview-card-line" style={{ top: this.state.previewMarkerY + 'px' }}/> 
-                            : null
+                                <hr className="preview-card-line"
+                                    style={{ top: this.state.previewMarkerY + 'px' }}/> : null
+
     let listTitle = <h3 style={{"textAlign": "center"}}>{this.props.name}</h3>
-    let cards = this.props.cards.map((c) => 
+    let cards = this.props.cards.map((c) =>
                               <span key={c} className="list-card" data-card-id={c}>
                                  <Card cardId={c} />
                                 <br/>
@@ -155,7 +161,12 @@ export class List extends Component {
 
         <div className="cards-container">
 
-          <ReactCSSTransitionGroup transitionName="card" transitionAppear={true} transitionAppearTimeout={500} transitionEnterTimeout={300} transitionLeaveTimeout={300}> 
+          <ReactCSSTransitionGroup
+            transitionName="card"
+            transitionAppear={true}
+            transitionAppearTimeout={500}
+            transitionEnterTimeout={300}
+            transitionLeaveTimeout={300}> 
             { cards }
           </ReactCSSTransitionGroup>
 

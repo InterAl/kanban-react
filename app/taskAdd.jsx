@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import ReactDOM from 'react-dom'
 import taskActions from './actionCreators/taskActionsCreator'
 import {connect} from 'react-redux'
+import './styles/tasks.css'
 
 class TaskAdd extends Component {
   constructor() {
@@ -45,8 +46,8 @@ class TaskAdd extends Component {
     )
 
     let plusSign = (
-      <span onClick={ this.toggleEditMode.bind(this, true) }
-        style={{cursor:'pointer', color: 'blue', marginRight:5}}>
+      <span className="add-task-btn" onClick={ this.toggleEditMode.bind(this, true) }
+        style={{}}>
         <b>{'\u2795'}</b>
       </span>
     )

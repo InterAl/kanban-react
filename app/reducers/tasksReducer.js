@@ -22,7 +22,7 @@ export default class TasksReducer extends BaseReducer {
 
     let nextStateUnordered = immutableUtils.updateCollectionItem(tasks, 
                                                                  {id: action.taskId},
-                                                                 task => {return {...task, done: !task.done}} )
+                                                                 task => ({...task, done: !task.done}))
 
     let nextStateOrdered = tasks.map(t => nextStateUnordered.find(t2 => t2.id == t.id))
 

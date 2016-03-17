@@ -43,7 +43,7 @@ export default class CardsReducer extends BaseReducer {
 
     super({
             slice: "board.cards",
-            actions 
+            actions
           })
 
     this.initialState = cards 

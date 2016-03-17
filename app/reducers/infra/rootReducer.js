@@ -13,8 +13,12 @@ export default class RootReducer extends BaseReducer {
       for (var reducer of this.reducers) {
         let slice = reducer.slice
         let sliceParts = slice.split('.')
-        let potentialParents = sliceParts.reduce((p, c, i) => p.concat(i > 0 ? `${p[i-1]}.${c}` : c), []).slice(0, -1)
+        let potentialParents = sliceParts
+                               .reduce((p, c, i) => p.concat(i > 0 ? `${p[i-1]}.${c}` : c), [])
+                               .slice(0, -1)
+
         potentialParents.reverse()
+
         let reducerParent = null
 
         while (!reducerParent && potentialParents.length > 0) {

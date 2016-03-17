@@ -16,7 +16,6 @@ export default class Card extends Component {
   static cardSource ()  {
     return {
       beginDrag (props) {
-
         let dragItem = {
           cardId: props.cardId
         }
@@ -42,14 +41,16 @@ export default class Card extends Component {
 
   onTitleKeyUp(ev) {
     if (ev.keyCode == 13) {
-      let action = cardActions.changeTitle({ cardId: this.props.cardId, title: ev.target.value })
+      let action = cardActions.changeTitle({ cardId: this.props.cardId,
+                                             title: ev.target.value })
       this.props.dispatch(action)
     }
   }
 
   onDescriptionKeyUp(ev) {
     if (ev.keyCode == 13) {
-      let action = cardActions.changeDescription({ cardId: this.props.cardId, description: ev.target.value })
+      let action = cardActions.changeDescription({ cardId: this.props.cardId, 
+                                                   description: ev.target.value })
       this.props.dispatch(action)
     }
   }
@@ -63,30 +64,43 @@ export default class Card extends Component {
     const card = this.props.cards.find(card => card.id == this.props.cardId)
 
     if (!card) return null
-      
+
     let cardDescription = card.showDescription ?
                             <Editable
                             content={ <span>{ card.description }</span> }
                             value={ card.description }
                             onKeyUp={ this.onDescriptionKeyUp.bind(this) } /> : null;
-            
-    
+
+
     return this.props.connectDragSource(
       <div className="card">
-          <span onClick={this.onClickRemoveCard.bind(this)} className="remove-card-btn"><b>✘</b></span>
-          <div className="card-ribbon"></div>
-          <span onClick={this.toggleDescription.bind(this)} style={{cursor: 'pointer'}}>{"+\u00a0"}</span>
-          <Editable content={ <b>{card.title}</b> } size={15} value={ card.title } onKeyUp={ this.onTitleKeyUp.bind(this) } />
-          <br/>
+        
+        <span onClick={this.onClickRemoveCard.bind(this)}
+          className="remove-card-btn">
+          <b>✘</b>
+        </span>
 
+        <div className="card-ribbon"></div>
+
+        <span onClick={this.toggleDescription.bind(this)}
+          style={{cursor: 'pointer'}}>{"+\u00a0"}
+        </span>
+
+        <div className="card-title">
+          <Editable content={ <b>{card.title}</b> } size={15} value={ card.title } 
+                    onKeyUp={ this.onTitleKeyUp.bind(this) } />
+        </div>
+
+        <div className="card-description">
           <ReactCSSTransitionGroup
             transitionName="card"
             transitionEnterTimeout={150}
             transitionLeaveTimeout={150}>
             { cardDescription }
           </ReactCSSTransitionGroup>
+        </div>
 
-          <Tasks key={card.id} cardId={card.id} tasks={card.tasks} />
+        <Tasks key={card.id} cardId={card.id} tasks={card.tasks} />
       </div>
     );
   }

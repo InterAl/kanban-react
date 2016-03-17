@@ -7,6 +7,6 @@ export default class BackgroundReducer extends BaseReducer {
   }
 
   reduce(state, action) {
-   return action.background 
+   return action.background
   }
 }

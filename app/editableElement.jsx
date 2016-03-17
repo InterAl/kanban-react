@@ -48,7 +48,8 @@ export default class EditableElement extends Component {
                        {...this.props} />
     } 
 
-    return ( <span onClick={ this.toggleEdit.bind(this, true) } onKeyUp={ this.onKeyUp.bind(this) }>
+    return ( <span onClick={ this.toggleEdit.bind(this, true) }
+                   onKeyUp={ this.onKeyUp.bind(this) }>
               { element }
              </span> )
   }

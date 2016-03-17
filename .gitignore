@@ -2,6 +2,7 @@ node_modules/
 *.swp
 *.swp/
 *.swo
+*.swn
 .idea
 *.log
 build/

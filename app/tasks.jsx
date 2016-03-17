@@ -3,6 +3,7 @@ import {connect} from 'react-redux'
 import taskActions from './actionCreators/taskActionsCreator'
 import TaskAdd from './taskAdd.jsx'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
+import './styles/tasks.css'
 
 export default class Tasks extends Component {
   constructor (props) {
@@ -27,7 +28,7 @@ export default class Tasks extends Component {
   render() {
     let tasks = this.props.tasks.map((t) => 
        <li key={t.id} >
-        <span onClick={this.removeTask.bind(this, t.id)} style={{cursor: 'pointer', color: 'red'}}>{"✘"}</span>
+        <span onClick={this.removeTask.bind(this, t.id)} className="task-remove-btn">{"✘"}</span>
         <input 
           type="checkbox" 
           defaultChecked={t.done} 

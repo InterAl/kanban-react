@@ -1,0 +1,26 @@
+.task-remove-btn {
+   cursor: pointer;
+   color: red;
+   opacity: 0.2;
+   transition: opacity 0.5s;
+ }
+
+ .task-remove-btn:hover {
+  opacity: 1;
+  transition: opacity 0.5s;
+ }
+
+ .add-task-btn {
+   cursor: pointer;
+   color: blue;
+   margin-right: 9px;
+   margin-right: 5px;
+   opacity: 0.2;
+   transition: opacity 0.5s;
+ }
+
+
+ .add-task-btn:hover {
+   opacity: 1;
+   transition: opacity 0.5s;
+ }
