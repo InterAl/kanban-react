@@ -60,8 +60,8 @@ export default class CardsReducer extends BaseReducer {
   addCard(cards, action) {
     let newCard = {
       id: action.cardId,
-      title: "Title",
-      description: "Description",
+      title: `Card ${action.cardId}`,
+      description: `Description ${action.cardId}`,
       status: "",
       tasks: []
     }

@@ -5,10 +5,18 @@ import List from './list'
 import cardActions from './actionCreators/cardActionCreators'
 import {DragDropContext} from 'react-dnd'
 import HTML5Backend from 'react-dnd-html5-backend'
+import BigAdditionButton from './bigAdditionButton';
+import listActions from './actionCreators/listActionCreator';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 
 class Board extends Component {
   constructor () {
     super();
+  }
+
+  onClickListAdd(ev) {
+    let action = listActions.addList(this.props.lists, "#CDEFFA")
+    this.props.dispatch(action)
   }
 
   render () {
@@ -19,7 +27,17 @@ class Board extends Component {
 
     return (
       <div>
-        {lists}
+        <ReactCSSTransitionGroup
+          transitionName="card"
+          transitionAppear={true}
+          transitionAppearTimeout={500}
+          transitionEnterTimeout={300}
+          transitionLeaveTimeout={300}> 
+          {lists}
+        </ReactCSSTransitionGroup>
+
+        <BigAdditionButton onClick={ this.onClickListAdd.bind(this)  }
+                           className="add-list-btn"/>
       </div>
     );
   }

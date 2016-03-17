@@ -15,7 +15,8 @@ export default class ListsReducer extends BaseReducer {
         actions: {
           "MOVE_CARD": "reduceMoveCard",
           "REMOVE_CARD": "reduceRemoveCard",
-          "CHANGE_LIST_NAME": "reduceChangeName"
+          "CHANGE_LIST_NAME": "reduceChangeName",
+          "ADD_LIST": "reduceAddList"
         }
     })
 
@@ -77,5 +78,14 @@ export default class ListsReducer extends BaseReducer {
    
    let next = this.retainListsOrder(state, nextUnordered) 
    return next
+  }
+
+
+  reduceAddList(state, action) {
+    let next = [ ...state, { id: action.id,
+                             name: action.name,
+                             color: action.color,
+                             cards: [] }] 
+    return next
   }
 }

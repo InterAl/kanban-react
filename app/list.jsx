@@ -12,6 +12,7 @@ import dragItemContainer from './utils/dragItemContainer'
 import _ from 'lodash'
 import EditableElement from './editableElement';
 import listActions from './actionCreators/listActionCreator';
+import BigAdditionButton from './bigAdditionButton'
 
 export class List extends Component {
 
@@ -141,11 +142,8 @@ export class List extends Component {
   }
 
   render() {
-    let addCardBtn = (<span
-                      className="add-card-btn"
-                      onClick={ this.onClickAddCardBtn.bind(this) }>
-                       <b>+</b>
-                     </span>)
+    let addCardBtn = (<BigAdditionButton 
+                      onClick={ this.onClickAddCardBtn.bind(this) }/>)
 
     let previewDropMarker = this.props.isOver && this.state.previewMarkerY ?
                                 <hr className="preview-card-line"

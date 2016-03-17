@@ -1,6 +1,7 @@
 .list {
   display: inline-block;
   margin-right: 30px;
+  margin-bottom: 50px;
   min-height: 500px;
   min-width: 300px;
   vertical-align: top;
@@ -24,10 +25,36 @@
   cursor: pointer;
   margin-left: 43%;
   opacity: 0.5;
-  transition: opacity 0.5s
+  transition: opacity 0.5s;
 }
 
 .add-card-btn:hover {
+  opacity: 1;
+  transition: opacity 0.5s;
+}
+
+.add-list-btn {
+  background: blue;
+  vertical-align: top;
+  display: inline-block;
+  margin-left: 152px;
+  margin-top: 60px;
+  padding-top: 6px;
+  border-radius: 100%;
+  width: 44px;
+  height: 35px;
+  font-size: 30px;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  right: 20px;
+  bottom: 20px;
+  cursor: pointer;
+  opacity: 0.5;
+  transition: opacity 0.5s;
+}
+
+.add-list-btn:hover {
   opacity: 1;
   transition: opacity 0.5s;
 }
