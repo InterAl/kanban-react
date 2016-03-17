@@ -3,9 +3,9 @@ import BaseReducer from './infra/baseReducer'
 import immutableUtils from '../utils/immutableUtils'
 
 let initialState = [
-        {name: "Backlog", color: '#CFCBF5', cards:[1, 2, 3]},
-        {name: "In Progress", color: '#D1F5CB', cards: []},
-        {name: "Done", color: '#F5F4CB', cards: []}
+        {id: 1, name: "Backlog", color: '#CFCBF5', cards:[1, 2, 3]},
+        {id: 2, name: "In Progress", color: '#D1F5CB', cards: []},
+        {id: 3, name: "Done", color: '#F5F4CB', cards: []}
       ];
 
 export default class ListsReducer extends BaseReducer {
@@ -14,11 +14,16 @@ export default class ListsReducer extends BaseReducer {
         slice: 'board.lists',
         actions: {
           "MOVE_CARD": "reduceMoveCard",
-          "REMOVE_CARD": "reduceRemoveCard"
+          "REMOVE_CARD": "reduceRemoveCard",
+          "CHANGE_LIST_NAME": "reduceChangeName"
         }
     })
 
     this.initialState = initialState
+  }
+
+  retainListsOrder(originalState, nextState) {
+    return originalState.map(l => nextState.find(l2 => l2.id == l.id));
   }
 
   reduceMoveCard(state, action) {
@@ -31,12 +36,12 @@ export default class ListsReducer extends BaseReducer {
       _(currentCardList.cards).findIndex(cardId => cardId == action.cardId) : -1
 
     let effectiveLocationIdx = (currentCardList &&
-                               currentCardList.name == action.listName &&
+                               currentCardList.id == action.listId &&
                                action.dropLocationIdx > currentCardIdx) ?
                                action.dropLocationIdx - 1 :
                                action.dropLocationIdx
 
-    let [list, otherLists] = _(lists).partition(l => l.name == action.listName)
+    let [list, otherLists] = _(lists).partition(l => l.id == action.listId)
                                      .value()
     list = list[0]
 
@@ -50,19 +55,27 @@ export default class ListsReducer extends BaseReducer {
     let newList = { ...list, cards: newCardsArray };
     let newSet = [newList, ...otherLists];
 
-    //Retain the original order
-    let newState = lists.map(l => newSet.find(l2 => l2.name == l.name));
-    return newState;
+    let next = this.retainListsOrder(state, newSet) 
+    return next;
   }
 
   reduceRemoveCard(state, action) {
-    let next = immutableUtils
-               .updateCollectionItem(state,
-               l => l.cards.indexOf(action.cardId) !== -1,
-               list => ({ ...list,
-                          cards: list.cards.filter(c => c !== action.cardId )}))
+    let nextUnordered = immutableUtils
+                        .updateCollectionItem(state,
+                        l => l.cards.indexOf(action.cardId) !== -1,
+                        list => ({ ...list,
+                                   cards: list.cards.filter(c => c !== action.cardId )}))
 
-    let nextOrdered = state.map(l => next.find(l2 => l2.name == l.name))
-    return nextOrdered
+    let next = this.retainListsOrder(state, nextUnordered) 
+    return next
+  }
+
+  reduceChangeName(state, action) {
+   let nextUnordered = immutableUtils.updateCollectionItem(state,
+                                      l => l.id == action.listId,
+                                      list => ({ ...list, name: action.listName}))
+   
+   let next = this.retainListsOrder(state, nextUnordered) 
+   return next
   }
 }

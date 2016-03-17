@@ -10,7 +10,8 @@ import addCardThunk from './thunks/addCard'
 import {DropTarget} from 'react-dnd'
 import dragItemContainer from './utils/dragItemContainer'
 import _ from 'lodash'
-import FlipMove from 'react-flip-move';
+import EditableElement from './editableElement';
+import listActions from './actionCreators/listActionCreator';
 
 export class List extends Component {
 
@@ -111,7 +112,7 @@ export class List extends Component {
         console.log("dropped");
         let item = getDraggedItem(monitor)
         let dropLocationIdx = _(props.cards).findIndex(cardId => cardId == component.state.previewCardId) + 1
-        let action = cardActions.moveCard(item.cardId, props.name, dropLocationIdx)
+        let action = cardActions.moveCard(item.cardId, props.id, dropLocationIdx)
         props.dispatch(action)
         component.setState({previewMarkerY: null})
       },
@@ -129,7 +130,14 @@ export class List extends Component {
   }
 
   onClickAddCardBtn(ev) {
-    this.props.dispatch(addCardThunk(this.props.name))
+    this.props.dispatch(addCardThunk(this.props.id))
+  }
+
+  onListNameKeyUp(ev) {
+    if (ev.keyCode == 13) {
+      let action = listActions.changeName(this.props.id, ev.target.value)
+      this.props.dispatch(action)
+    }
   }
 
   render() {
@@ -142,8 +150,13 @@ export class List extends Component {
     let previewDropMarker = this.props.isOver && this.state.previewMarkerY ?
                                 <hr className="preview-card-line"
                                     style={{ top: this.state.previewMarkerY + 'px' }}/> : null
-
-    let listTitle = <h3 style={{"textAlign": "center"}}>{this.props.name}</h3>
+ 
+    let listTitle = <EditableElement
+                     content={ <h3 style={{"textAlign": "center"}}>{this.props.name}</h3> }
+                     value={ this.props.name }
+                     style={{"textAlign": "center"}}
+                     onKeyUp={ this.onListNameKeyUp.bind(this) } />
+             
     let cards = this.props.cards.map((c) =>
                               <span key={c} className="list-card" data-card-id={c}>
                                  <Card cardId={c} />

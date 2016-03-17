@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import React, {Component} from 'react'
+import './styles/form.css';
 
 export default class EditableElement extends Component {
 
@@ -42,6 +43,7 @@ export default class EditableElement extends Component {
       element = this.props.content
     } else {
       element = <input type="text"
+                       className="form"
                        ref={ this.textInputSelectAll.bind(this) } 
                        onChange={ this.onChangeInput.bind(this) }  
                        onBlur={ this.onBlurInput.bind(this) }

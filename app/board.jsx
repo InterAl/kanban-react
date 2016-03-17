@@ -14,7 +14,7 @@ class Board extends Component {
   render () {
     console.log("board props", this.props)
     const lists = this.props.lists.map(l =>
-          <List key={l.name} name={l.name} cards={l.cards} color={l.color} />
+          <List key={l.id} id={l.id} name={l.name} cards={l.cards} color={l.color} />
       );
 
     return (
