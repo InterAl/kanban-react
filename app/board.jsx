@@ -1,5 +1,4 @@
 import React, {Component} from 'react'
-import {findDOMNode} from 'react-dom';
 import {connect} from 'react-redux'
 import cards from './cardsData'
 import List from './list'
@@ -8,6 +7,7 @@ import HTML5Backend from 'react-dnd-html5-backend'
 import BigAdditionButton from './bigAdditionButton';
 import listActions from './actionCreators/listActionCreator';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
+import dropMarkerCalc from './utils/dropMarkerCalc';
 
 class Board extends Component {
   constructor () {
@@ -22,75 +22,20 @@ class Board extends Component {
 
   static dropTarget() {
 
-    function getDomElementDistanceFromMouse(mouseX, listElement, side) {
-      let rect = listElement.boundedRect
-      return Math.abs(rect[side] - mouseX)
-    }
-
-    function getDomlistElements(component) {
-      let listElement = findDOMNode(component)
-      let listsContainerEle = listElement.getElementsByClassName("lists-container")[0]
-      let listEles = listsContainerEle.getElementsByClassName("list-container")
-
-      listEles = Array.prototype.slice.call(listEles)
-
-      return listEles.map(e => {
-        let element = e.getElementsByClassName("list")[0]
-        let boundedRect = element.getBoundingClientRect()
-
-        return {
-          listId: e.getAttribute("data-list-id"),
-          element,
-          boundedRect
-        }})
-    }
-
-    function getTopElement(listElements) {
-      return _(listElements).minBy(e => e.boundedRect.top)
-    }
-
-    function getClosestElementToMouse(listElements, mouseX) {
-      let closestElement = _(listElements).minBy(e => {
-        return getDomElementDistanceFromMouse(mouseX, e, 'right')
-      })
-      return closestElement
-    }
-
-    function getPreviewMarker(monitor, component) {
-      let mouseOffset = monitor.getClientOffset()
-      if (!mouseOffset) return;
-
-      let mouseX = mouseOffset.x;
-      let domlistElements = getDomlistElements(component)
-      let closestElement = getClosestElementToMouse(domlistElements, mouseX)
-      let previewMarkerX, previewlistId = closestElement ? closestElement.listId : "-1"
-
-      if (domlistElements && domlistElements.length > 0) {
-        let topElement = getTopElement(domlistElements)
-
-        if (closestElement == topElement) {
-          let closestSide = _(['left', 'right']).minBy(side => getDomElementDistanceFromMouse(mouseX, topElement, side))
-          previewMarkerX = topElement.boundedRect[closestSide]
-          previewlistId = closestSide == 'left' ? -1 : previewlistId
-        } else {
-          previewMarkerX = closestElement.boundedRect.right
-        }
-      } else {
-        previewMarkerX = mouseX
-      }
-
-      return {
-        previewMarkerX,
-        previewlistId
-      }
-    }
+    let getPreviewMarker = dropMarkerCalc({
+      containerName: "lists-container", 
+      itemContainerName: "list-container",
+      itemName: "list",
+      elementIdAttr: "data-list-id",
+      direction: "horizontal"
+    })
 
     function setPreviewMarker(monitor, component) {
-      let { previewlistId, previewMarkerX } = getPreviewMarker(monitor, component)
+      let { previewitemId, previewMarkerLoc } = getPreviewMarker(monitor, component)
 
       component.setState({
-        previewlistId,
-        previewMarkerX
+        previewlistId: previewitemId,
+        previewMarkerLoc
       })
     }
 
@@ -113,7 +58,7 @@ class Board extends Component {
         let item = getDraggedItem(monitor)
         let action = listActions.moveList(item.listId, component.state.previewlistId)
         props.dispatch(action)
-        component.setState({previewMarkerX: null})
+        component.setState({previewMarkerLoc: null})
       },
     };
   } 
@@ -135,13 +80,12 @@ class Board extends Component {
        </span>
     );
 
-    let previewDropMarker = this.props.isOver && this.state.previewMarkerX ?
-      <div className="preview-card-ver-line" style={{left: this.state.previewMarkerX}}>
+    let previewDropMarker = this.props.isOver && this.state.previewMarkerLoc ?
+      <div className="preview-card-ver-line" style={{left: this.state.previewMarkerLoc}}>
       </div> : null
 
     return this.props.connectDropTarget(
       <div>
-
         { previewDropMarker }
 
         <span className="lists-container">

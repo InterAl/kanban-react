@@ -71,6 +71,7 @@ export default class ListsReducer extends BaseReducer {
     list = list[0]
 
     otherLists = _(otherLists).map((l, i) => ({l, i}))
+
     let targetList = _(otherLists).find(l => l.l.id == action.targetListId) || state[0]
 
     let [listsBefore, listsAfter] = _(otherLists)

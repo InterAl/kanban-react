@@ -13,6 +13,7 @@ import _ from 'lodash'
 import EditableElement from './editableElement';
 import listActions from './actionCreators/listActionCreator';
 import BigAdditionButton from './bigAdditionButton'
+import dropMarkerCalc from './utils/dropMarkerCalc'
 
 export class List extends Component {
 
@@ -23,75 +24,20 @@ export class List extends Component {
 
   static dropTarget() {
 
-    function getDomElementDistanceFromMouse(mouseY, cardElement, side) {
-      let rect = cardElement.boundedRect
-      return Math.abs(rect[side] - mouseY)
-    }
-
-    function getDomCardElements(component) {
-      let listElement = findDOMNode(component)
-      let cardsContainerEle = listElement.getElementsByClassName("cards-container")[0]
-      let cardEles = cardsContainerEle.getElementsByClassName("card-container")
-
-      cardEles = Array.prototype.slice.call(cardEles)
-
-      return cardEles.map(e => {
-        let element = e.getElementsByClassName("card")[0]
-        let boundedRect = element.getBoundingClientRect()
-
-        return {
-          cardId: e.getAttribute("data-card-id"),
-          element,
-          boundedRect
-        }})
-    }
-
-    function getTopElement(cardElements) {
-      return _(cardElements).minBy(e => e.boundedRect.top)
-    }
-
-    function getClosestElementToMouse(cardElements, mouseY) {
-      let closestElement = _(cardElements).minBy(e => {
-        return getDomElementDistanceFromMouse(mouseY, e, 'bottom')
-      })
-      return closestElement
-    }
-
-    function getPreviewMarker(monitor, component) {
-      let mouseOffset = monitor.getClientOffset()
-      if (!mouseOffset) return;
-
-      let mouseY = mouseOffset.y;
-      let domCardElements = getDomCardElements(component)
-      let closestElement = getClosestElementToMouse(domCardElements, mouseY)
-      let previewMarkerY, previewCardId = closestElement ? closestElement.cardId : "-1"
-
-      if (domCardElements && domCardElements.length > 0) {
-        let topElement = getTopElement(domCardElements)
-
-        if (closestElement == topElement) {
-          let closestSide = _(['bottom', 'top']).minBy(side => getDomElementDistanceFromMouse(mouseY, topElement, side))
-          previewMarkerY = topElement.boundedRect[closestSide]
-          previewCardId = closestSide == 'top' ? -1 : previewCardId
-        } else {
-          previewMarkerY = closestElement.boundedRect.bottom
-        }
-      } else {
-        previewMarkerY = mouseY
-      }
-
-      return {
-        previewMarkerY,
-        previewCardId
-      }
-    }
+    let getPreviewMarker = dropMarkerCalc({
+      containerName: "cards-container",
+      itemContainerName: "card-container",
+      itemName: "card",
+      elementIdAttr: "data-card-id",
+      direction: "vertical"
+    })
 
     function setPreviewMarker(monitor, component) {
-      let { previewCardId, previewMarkerY } = getPreviewMarker(monitor, component)
+      let { previewitemId, previewMarkerLoc } = getPreviewMarker(monitor, component)
 
       component.setState({
-        previewCardId,
-        previewMarkerY
+        previewCardId: previewitemId,
+        previewMarkerLoc
       })
     }
 
@@ -115,7 +61,7 @@ export class List extends Component {
         let dropLocationIdx = _(props.cards).findIndex(cardId => cardId == component.state.previewCardId) + 1
         let action = cardActions.moveCard(item.cardId, props.id, dropLocationIdx)
         props.dispatch(action)
-        component.setState({previewMarkerY: null})
+        component.setState({previewMarkerLoc: null})
       },
     };
   }
@@ -169,30 +115,30 @@ export class List extends Component {
   }
 
   render() {
-    let addCardBtn = (<BigAdditionButton 
+    let addCardBtn = (<BigAdditionButton
                       onClick={ this.onClickAddCardBtn.bind(this) }/>)
 
-    let previewDropMarker = this.props.isOver && this.state.previewMarkerY ?
+    let previewDropMarker = this.props.isOver && this.state.previewMarkerLoc ?
                                 <hr className="preview-card-line"
-                                    style={{ top: this.state.previewMarkerY + 'px' }}/> : null
- 
+                                    style={{ top: this.state.previewMarkerLoc + 'px' }}/> : null
+
     let listTitle = <EditableElement
                      content={ <h3 style={{"textAlign": "center"}}>{this.props.name}</h3> }
                      value={ this.props.name }
                      style={{"textAlign": "center"}}
                      onKeyUp={ this.onListNameKeyUp.bind(this) } />
-             
+
     let cards = this.props.cards.map((c) =>
                               <span key={c} className="card-container" data-card-id={c}>
                                  <Card cardId={c} />
                                 <br/>
                               </span>)
-    
+ 
     return this.props.connectDragSource(this.props.connectDropTarget(
 
       <div className="list"
            style={{ background: this.props.color}}>
-           
+ 
        <span onClick={this.onClickRemoveList.bind(this, this.props.id)}
          className="remove-card-btn">
          <b>✘</b>
