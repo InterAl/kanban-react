@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import React, {Component} from 'react'
+import {findDOMNode} from 'react-dom';
 import './styles/form.css';
 
 export default class EditableElement extends Component {
@@ -23,13 +24,15 @@ export default class EditableElement extends Component {
   }
 
   onChangeInput(ev) {
-    this.props.value = ev.target.value
-    this.forceUpdate()
+    this.setState({overriddenInputValue: ev.target.value})
   }
 
   textInputSelectAll(component) {
-    let input = React.findDOMNode(component); 
-    input && input.setSelectionRange(0, input.value.length); 
+    let input = findDOMNode(component); 
+    if (input) {
+      input.selectionStart = input.selectionEnd = input.value.length;
+      input && input.focus()
+    }
   }
 
   onBlurInput(ev) {
@@ -47,7 +50,10 @@ export default class EditableElement extends Component {
                        ref={ this.textInputSelectAll.bind(this) } 
                        onChange={ this.onChangeInput.bind(this) }  
                        onBlur={ this.onBlurInput.bind(this) }
-                       {...this.props} />
+
+                       {...{...this.props,
+                               value: this.state.overriddenInputValue ||
+                                 this.props.value }} />
     } 
 
     return ( <span onClick={ this.toggleEdit.bind(this, true) }
