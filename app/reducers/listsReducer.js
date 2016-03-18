@@ -16,7 +16,8 @@ export default class ListsReducer extends BaseReducer {
           "MOVE_CARD": "reduceMoveCard",
           "REMOVE_CARD": "reduceRemoveCard",
           "CHANGE_LIST_NAME": "reduceChangeName",
-          "ADD_LIST": "reduceAddList"
+          "ADD_LIST": "reduceAddList",
+          "REMOVE_LIST": "reduceRemoveList"
         }
     })
 
@@ -86,6 +87,12 @@ export default class ListsReducer extends BaseReducer {
                              name: action.name,
                              color: action.color,
                              cards: [] }] 
+    return next
+  }
+
+  reduceRemoveList(state, action) {
+    let next = [ ...state.filter(l => l.id !== action.id) ]
+
     return next
   }
 }

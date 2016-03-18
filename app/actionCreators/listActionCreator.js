@@ -18,5 +18,12 @@ export default {
       color,
       name: `List ${id}`
     }
+  },
+
+  removeList(id) {
+    return {
+      type: "REMOVE_LIST",
+      id 
+    }
   }
 }

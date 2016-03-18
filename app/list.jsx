@@ -141,6 +141,11 @@ export class List extends Component {
     }
   }
 
+  onClickRemoveList(ev) {
+    let action = listActions.removeList(this.props.id)
+    this.props.dispatch(action)
+  }
+
   render() {
     let addCardBtn = (<BigAdditionButton 
                       onClick={ this.onClickAddCardBtn.bind(this) }/>)
@@ -166,6 +171,11 @@ export class List extends Component {
       <div className="list"
            style={{ background: this.props.color}}>
            
+       <span onClick={this.onClickRemoveList.bind(this, this.props.id)}
+         className="remove-card-btn">
+         <b>✘</b>
+       </span>
+
         { listTitle }
 
         { previewDropMarker }
