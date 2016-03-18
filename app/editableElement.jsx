@@ -49,8 +49,8 @@ export default class EditableElement extends Component {
                        onBlur={ this.onBlurInput.bind(this) }
 
                        {...{...this.props,
-                               value: this.state.overriddenInputValue ||
-                                 this.props.value }} />
+                         value: this.state.overriddenInputValue !== undefined ? 
+                                this.state.overriddenInputValue : this.props.value }} />
     }
 
     return ( <span onClick={ this.toggleEdit.bind(this, true) }

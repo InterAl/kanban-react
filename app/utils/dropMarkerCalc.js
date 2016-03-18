@@ -40,9 +40,7 @@ export default function previewMarkerCalc({containerName,
   }
 
   function getClosestElementToMouse(itemElements, mouse) {
-    let closestElement = _(itemElements).minBy(e => {
-      return getDomElementDistanceFromMouse(mouse, e, elementSide)
-    })
+    let closestElement = _(itemElements).minBy(e => getDomElementDistanceFromMouse(mouse, e, elementSide))
     return closestElement
   }
 
@@ -52,6 +50,10 @@ export default function previewMarkerCalc({containerName,
 
     let mouse = mouseOffset[mouseCoordinate]
     let domitemElements = getDomitemElements(component)
+    domitemElements = isVertical ? domitemElements :
+                                   domitemElements.filter(e => e.boundedRect.top <= mouseOffset.y &&
+                                                                mouseOffset.y <= e.boundedRect.bottom)
+
     let closestElement = getClosestElementToMouse(domitemElements, mouse)
     let previewitemId = closestElement ? closestElement.itemId : "-1"
     let previewMarkerLoc
@@ -72,7 +74,9 @@ export default function previewMarkerCalc({containerName,
 
     return {
       previewMarkerLoc,
-      previewitemId
+      previewitemId,
+      closestElementRect: closestElement &&
+                          closestElement.boundedRect
     }
   }
 }

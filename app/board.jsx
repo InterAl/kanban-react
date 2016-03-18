@@ -31,11 +31,12 @@ class Board extends Component {
     })
 
     function setPreviewMarker(monitor, component) {
-      let { previewitemId, previewMarkerLoc } = getPreviewMarker(monitor, component)
+      let { previewitemId, previewMarkerLoc, closestElementRect } = getPreviewMarker(monitor, component)
 
       component.setState({
         previewlistId: previewitemId,
-        previewMarkerLoc
+        previewMarkerLocX: previewMarkerLoc,
+        previewMarkerLocY: closestElementRect && closestElementRect.top
       })
     }
 
@@ -58,7 +59,7 @@ class Board extends Component {
         let item = getDraggedItem(monitor)
         let action = listActions.moveList(item.listId, component.state.previewlistId)
         props.dispatch(action)
-        component.setState({previewMarkerLoc: null})
+        component.setState({previewMarkerLocX: null})
       },
     };
   } 
@@ -80,8 +81,9 @@ class Board extends Component {
        </span>
     );
 
-    let previewDropMarker = this.props.isOver && this.state.previewMarkerLoc ?
-      <div className="preview-card-ver-line" style={{left: this.state.previewMarkerLoc}}>
+    let previewDropMarker = this.props.isOver && this.state.previewMarkerLocX ?
+      <div className="preview-card-ver-line" style={{ left: this.state.previewMarkerLocX, 
+                                                      top: this.state.previewMarkerLocY }}>
       </div> : null
 
     return this.props.connectDropTarget(
