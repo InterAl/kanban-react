@@ -20,8 +20,8 @@ export default class Card extends Component {
           cardId: props.cardId
         }
 
-        console.log("begin dragging", dragItem);
-        dragItemContainer.setDragItem(dragItem) //due to a bug in react-dnd's monitor.getItem
+        console.log("begin dragging card", dragItem);
+        dragItemContainer.setDragItem(dragItem) //due to a bug in react-dnd
         return dragItem
       }
     }

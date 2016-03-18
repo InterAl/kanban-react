@@ -25,5 +25,13 @@ export default {
       type: "REMOVE_LIST",
       id 
     }
+  },
+
+  moveList(id, targetListId) {
+     return {
+      type: "MOVE_LIST",
+      id,
+      targetListId
+     }
   }
 }

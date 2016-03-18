@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React, {Component} from 'react'
-import {findDOMNode} from 'react-dom';
-import './styles/form.css';
+import {findDOMNode} from 'react-dom'
+import './styles/form.css'
 
 export default class EditableElement extends Component {
 
@@ -20,7 +20,7 @@ export default class EditableElement extends Component {
   onKeyUp(ev) {
     if (ev.keyCode == 13) {
       this.toggleEdit(false)
-    }  
+    }
   }
 
   onChangeInput(ev) {
@@ -28,11 +28,8 @@ export default class EditableElement extends Component {
   }
 
   textInputSelectAll(component) {
-    let input = findDOMNode(component); 
-    if (input) {
-      input.selectionStart = input.selectionEnd = input.value.length;
-      input && input.focus()
-    }
+    let input = findDOMNode(component);
+    input && input.focus()
   }
 
   onBlurInput(ev) {
@@ -47,14 +44,14 @@ export default class EditableElement extends Component {
     } else {
       element = <input type="text"
                        className="form"
-                       ref={ this.textInputSelectAll.bind(this) } 
-                       onChange={ this.onChangeInput.bind(this) }  
+                       ref={ this.textInputSelectAll.bind(this) }
+                       onChange={ this.onChangeInput.bind(this) }
                        onBlur={ this.onBlurInput.bind(this) }
 
                        {...{...this.props,
                                value: this.state.overriddenInputValue ||
                                  this.props.value }} />
-    } 
+    }
 
     return ( <span onClick={ this.toggleEdit.bind(this, true) }
                    onKeyUp={ this.onKeyUp.bind(this) }>

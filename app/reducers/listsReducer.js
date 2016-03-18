@@ -17,7 +17,8 @@ export default class ListsReducer extends BaseReducer {
           "REMOVE_CARD": "reduceRemoveCard",
           "CHANGE_LIST_NAME": "reduceChangeName",
           "ADD_LIST": "reduceAddList",
-          "REMOVE_LIST": "reduceRemoveList"
+          "REMOVE_LIST": "reduceRemoveList",
+          "MOVE_LIST": "reduceMoveList"
         }
     })
 
@@ -59,6 +60,27 @@ export default class ListsReducer extends BaseReducer {
 
     let next = this.retainListsOrder(state, newSet) 
     return next;
+  }
+
+  reduceMoveList(state, action) {
+    if (state.length < 2)
+      return state
+
+    let [list, otherLists] = _(state).partition(l => l.id == action.id)
+                                     .value()
+    list = list[0]
+
+    otherLists = _(otherLists).map((l, i) => ({l, i}))
+    let targetList = _(otherLists).find(l => l.l.id == action.targetListId) || state[0]
+
+    let [listsBefore, listsAfter] = _(otherLists)
+                                    .partition(l => l.i <= targetList.i)
+                                    .map(a => a.map(l => l.l))
+                                    .value()
+
+    let newSet = [ ...listsBefore, list, ...listsAfter ]
+
+    return newSet;
   }
 
   reduceRemoveCard(state, action) {

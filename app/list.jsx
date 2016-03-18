@@ -7,7 +7,7 @@ import './styles/list.css'
 import './styles/preview-card.css'
 import cardActions from './actionCreators/cardActionCreators'
 import addCardThunk from './thunks/addCard'
-import {DropTarget} from 'react-dnd'
+import {DropTarget, DragSource} from 'react-dnd'
 import dragItemContainer from './utils/dragItemContainer'
 import _ from 'lodash'
 import EditableElement from './editableElement';
@@ -31,7 +31,7 @@ export class List extends Component {
     function getDomCardElements(component) {
       let listElement = findDOMNode(component)
       let cardsContainerEle = listElement.getElementsByClassName("cards-container")[0]
-      let cardEles = cardsContainerEle.getElementsByClassName("list-card")
+      let cardEles = cardsContainerEle.getElementsByClassName("card-container")
 
       cardEles = Array.prototype.slice.call(cardEles)
 
@@ -120,7 +120,22 @@ export class List extends Component {
     };
   }
 
-  static collect(connect, monitor) {
+  static listSource ()  {
+    return {
+      beginDrag (props) {
+        let dragItem = {
+          listId: props.id
+        }
+
+        console.log("begin dragging list", dragItem);
+        dragItemContainer.setDragItem(dragItem)
+        //due to a bug in react-dnd's
+        return dragItem
+      }
+    }
+  }
+
+  static collectTarget(connect, monitor) {
       return {
         connectDropTarget: connect.dropTarget(),
         isOver: monitor.isOver(),
@@ -128,6 +143,13 @@ export class List extends Component {
         canDrop: monitor.canDrop(),
         itemType: monitor.getItemType()
       };
+  }
+
+  static collectSource(connect, monitor) {
+    return {
+      connectDragSource: connect.dragSource(),
+      isDragging: monitor.isDragging()
+    }
   }
 
   onClickAddCardBtn(ev) {
@@ -161,12 +183,12 @@ export class List extends Component {
                      onKeyUp={ this.onListNameKeyUp.bind(this) } />
              
     let cards = this.props.cards.map((c) =>
-                              <span key={c} className="list-card" data-card-id={c}>
+                              <span key={c} className="card-container" data-card-id={c}>
                                  <Card cardId={c} />
                                 <br/>
                               </span>)
     
-    return this.props.connectDropTarget(
+    return this.props.connectDragSource(this.props.connectDropTarget(
 
       <div className="list"
            style={{ background: this.props.color}}>
@@ -197,11 +219,12 @@ export class List extends Component {
 
      </div>
 
-    );
+    ));
   }
 }
 
-let dropTarget = DropTarget(props => ["CARD", "LIST"], List.dropTarget(), List.collect)(List)
-let connector = connect()(dropTarget);
+let dropTarget = DropTarget(props => ["CARD"], List.dropTarget(), List.collectTarget)(List)
+let dragSource = DragSource("LIST", List.listSource(), List.collectSource)(dropTarget)
+let connector = connect()(dragSource);
 
 export default connector;
