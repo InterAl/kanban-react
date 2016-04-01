@@ -27,7 +27,6 @@ describe('board', () => {
   })
 
   it('should render', () => {
-    console.log(store)
     var listContainer = ReactTestUtils.findRenderedDOMComponentWithClass(component, "lists-container")
     var addListButton = ReactTestUtils.findRenderedDOMComponentWithClass(component, "add-list-btn")
     assert(!!listContainer)
