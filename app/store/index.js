@@ -4,8 +4,9 @@ import thunk from 'redux-thunk'
 
 let store = createStore(appRootReducer,
                         null,
-                        compose(
-                          applyMiddleware(thunk),
-                          window.devToolsExtension ? window.devToolsExtension() : undefined
-                        ))
+                        applyMiddleware(thunk))
+                        // compose(
+                        //   applyMiddleware(thunk),
+                        //   window.devToolsExtension ? window.devToolsExtension() : undefined
+                        // ))
 export default store 

@@ -2,14 +2,10 @@ var hostname = "localhost";
 var port = 1122;
 
 module.exports = {
-  entry: 'mocha!./test/board.test.js',
+  entry: {},
+  output: {},
   resolve: {
     extensions: ['', '.js', '.jsx']
-  },
-  output: {
-    filename: 'test.build.js',
-    path: 'tests/',
-    publicPath: 'http://' + hostname + ':' + port + '/tests'
   },
   module: {
     loaders: [
@@ -36,5 +32,5 @@ module.exports = {
     host: hostname,
     port: port
   },
-  devtool: 'source-map'
+  devtool: 'inline-source-map'
 };
